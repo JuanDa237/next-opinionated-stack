@@ -1,36 +1,134 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js Opinionated Stack
 
-## Getting Started
+An opinionated Next.js starter template designed to eliminate boilerplate and accelerate development. Fork this repo and start building immediately with a production-ready setup.
 
-First, run the development server:
+## 🎯 Philosophy
+
+This template is built with strong opinions about:
+
+- **Project structure** - Organized, scalable folder architecture
+- **Development experience** - Pre-configured tooling and dependencies
+- **AI-ready** - Optimized for AI-assisted development with MCP configurations
+- **Production-ready** - Battle-tested patterns and best practices
+
+## ✨ Features
+
+- **⚡ Next.js 16+**
+- **📁 Opinionated Structure** - Clear separation of concerns
+- **🤖 AI-Ready** - MCP (Model Context Protocol) configurations included
+- **🔐 Better Auth** - Modern authentication setup included
+- **🎨 shadcn/ui** - Beautiful, accessible UI components
+- **🧩 TanStack Suite** - Form, Table, and Query preconfigured
+- **✅ Zod** - Schema validation ready to use
+- **🪝 Husky** - Git hooks for consistent quality
+- **🎯 Zero Boilerplate** - Start building features immediately
+
+## 🚀 Quick Start
+
+### 1. Fork or Clone
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Fork this repository on GitHub, then clone your fork
+git clone https://github.com/JuanDa237/next-opinionated-stack
+cd next-opinionated-stack
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install Dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Run Development Server
 
-## Learn More
+```bash
+pnpm dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Open [http://localhost:3000](http://localhost:3000) to see your app.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📂 Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+next-opinionated-stack/
+├── app/                    # Next.js App Router
+│   ├── layout.tsx
+│   ├── page.tsx
+│   └── globals.css
+├── public/                # Static assets
+├── .vscode/
+│   └── mcp.json           # Model Context Protocol settings
+├── .docs/                 # Project documentation
+│   └── architecture.md
+└── ...config files        # ESLint, TypeScript, Tailwind, etc.
+```
 
-## Deploy on Vercel
+## 🤖 AI-Ready Features
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This template is optimized for AI-assisted development:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **MCP Configurations** - Pre-configured Model Context Protocol settings
+- **Documentation Structure** - Clear docs for AI context understanding
+- **Consistent Patterns** - Predictable code structure for better AI suggestions
+- **Type Safety** - TypeScript helps AI understand your codebase
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js 15+](https://nextjs.org/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **UI Components**: [shadcn/ui](https://ui.shadcn.com/)
+- **Authentication**: [Better Auth](https://www.better-auth.com/)
+- **Forms**: [TanStack Form](https://tanstack.com/form)
+- **Tables**: [TanStack Table](https://tanstack.com/table)
+- **Data Fetching**: [TanStack Query](https://tanstack.com/query)
+- **Validation**: [Zod](https://zod.dev/)
+- **Package Manager**: [pnpm](https://pnpm.io/)
+- **Git Hooks**: [Husky](https://typicode.github.io/husky/)
+
+## 📝 Available Scripts
+
+```bash
+pnpm dev          # Start development server
+pnpm build        # Build for production
+pnpm start        # Start production server
+pnpm lint         # Run ESLint
+```
+
+## 🎨 Customization
+
+This is an opinionated starter, but it's yours to customize:
+
+1. Update `package.json` with your project details
+2. Modify the folder structure to fit your needs
+3. Add your preferred libraries and tools
+4. Update this README with your project information
+
+## 🚢 Deployment
+
+### Vercel (Recommended)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
+
+The easiest way to deploy is using [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme).
+
+Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for other hosting options.
+
+## 📖 Learn More
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Next.js App Router](https://nextjs.org/docs/app)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [TypeScript Documentation](https://www.typescriptlang.org/docs/)
+
+## 🤝 Contributing
+
+Contributions are welcome! Open an issue to propose changes or submit a pull request from a feature branch. Template variants are encouraged (e.g., a `mongodb` branch with MongoDB preconfigured).
+
+## 📄 License
+
+MIT License - feel free to use this template for your projects.
+
+---
+
+**Ready to build?** Fork this repo and start shipping features instead of setting up boilerplate! 🚀
