@@ -4,7 +4,7 @@ An opinionated Next.js starter template designed to eliminate boilerplate and ac
 
 ## 🎯 Philosophy
 
-This template is built with strong opinions about:
+This template is built around a few non-negotiables:
 
 - **Project structure** - Organized, scalable folder architecture
 - **Development experience** - Pre-configured tooling and dependencies
@@ -20,6 +20,8 @@ This template is built with strong opinions about:
 - **🎨 shadcn/ui** - Beautiful, accessible UI components
 - **🧩 TanStack Suite** - Form, Table, and Query preconfigured
 - **✅ Zod** - Schema validation ready to use
+- **🎯 Prettier** - Consistent code formatting
+- **🧹 ESLint** - Code linting and quality checks
 - **🪝 Husky** - Git hooks for consistent quality
 - **🎯 Zero Boilerplate** - Start building features immediately
 
@@ -47,21 +49,81 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) to see your app.
 
-## 📂 Project Structure
+## ✅ First Steps After Cloning
+
+1. Update app metadata in `app/layout.tsx`
+2. Configure authentication providers
+3. Remove example features you don’t need
+4. Start a new feature under `features/`
+
+## 👥 Who This Is For
+
+This starter is ideal if you:
+
+- Prefer **feature-first architecture**
+- Want **strong defaults** instead of endless setup decisions
+- Build apps with **auth, dashboards, and forms**
+- Use or plan to use **AI-assisted development**
+
+This may not be for you if you:
+
+- Prefer minimal, unopinionated starters
+- Want Pages Router instead of App Router
+- Dislike feature-based folder structures
+
+## 📂 Project Structure (Opinionated)
+
+This structure follows a **feature-first, route-light** philosophy:
+
+- Routes stay thin and declarative
+- Features own their UI, data, and logic
+- Shared code lives only when it truly belongs everywhere
 
 ```
 next-opinionated-stack/
-├── app/                    # Next.js App Router
-│   ├── layout.tsx
-│   ├── page.tsx
-│   └── globals.css
-├── public/                # Static assets
-├── .vscode/
-│   └── mcp.json           # Model Context Protocol settings
-├── .docs/                 # Project documentation
-│   └── architecture.md
-└── ...config files        # ESLint, TypeScript, Tailwind, etc.
+├── app/                                # Next.js App Router (routes + layouts)
+│   ├── globals.css                     # Global styles
+│   ├── layout.tsx                      # Root layout
+│   ├── (home)                          # Public-facing routes group
+│   └── admin/                          # Admin area
+│       ├── (auth)/                     # Auth routes group
+│       │   ├── layout.tsx
+│       │   ├── login/
+│       │   │   ├── page.tsx
+│       │   │   └── components/         # Route-scoped UI
+│       │   └── signup/
+│       │       ├── page.tsx
+│       │       └── components/         # Route-scoped UI
+│       └── (dashboard)/                # Dashboard routes group
+│           ├── page.tsx
+│           └── components/             # Route-scoped UI
+├── components/                         # Shared, reusable UI
+│   ├── common/                          # Brand/marketing components
+│   └── ui/                              # shadcn/ui primitives
+├── features/                           # Feature-first domains
+│   └── auth/
+│       ├── components/                 # Feature UI
+│       ├── containers/                 # Feature smart components
+│       ├── data/                       # Feature data access
+│       ├── helpers/                    # Feature helpers
+│       ├── hooks/                      # Feature hooks
+│       ├── lib/                        # Feature libraries/dependencies
+│       ├── models/                     # Feature types/models
+│       ├── stores/                     # Feature state (client)
+│       └── utils/                      # Feature utilities
+├── hooks/                              # Shared app hooks
+├── lib/                                # Shared utilities (server/client)
+├── public/                             # Static assets
+├── .docs/                              # Project documentation
+├── .vscode/                            # MCP + editor settings
+└── ...config files                     # ESLint, TypeScript, Tailwind, etc.
 ```
+
+### Where Should Code Live?
+
+- **app/** → routing, layouts, and route-level composition
+- **features/** → business logic, domain UI, data access
+- **components/** → reusable, app-agnostic UI only
 
 ## 🤖 AI-Ready Features
 
@@ -72,9 +134,22 @@ This template is optimized for AI-assisted development:
 - **Consistent Patterns** - Predictable code structure for better AI suggestions
 - **Type Safety** - TypeScript helps AI understand your codebase
 
+Example:
+
+- MCP configs expose feature boundaries clearly
+- Predictable file naming improves AI refactors
+- Zod schemas + TypeScript give AI strong type signals
+
+## 🧱 Design Constraints
+
+- App Router only
+- Feature-first architecture
+- TypeScript everywhere
+- Client state kept local to features
+
 ## 🛠️ Tech Stack
 
-- **Framework**: [Next.js 15+](https://nextjs.org/)
+- **Framework**: [Next.js 16+](https://nextjs.org/)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **UI Components**: [shadcn/ui](https://ui.shadcn.com/)
@@ -83,6 +158,8 @@ This template is optimized for AI-assisted development:
 - **Tables**: [TanStack Table](https://tanstack.com/table)
 - **Data Fetching**: [TanStack Query](https://tanstack.com/query)
 - **Validation**: [Zod](https://zod.dev/)
+- **Formatting**: [Prettier](https://prettier.io/)
+- **Linting**: [ESLint](https://eslint.org/)
 - **Package Manager**: [pnpm](https://pnpm.io/)
 - **Git Hooks**: [Husky](https://typicode.github.io/husky/)
 
@@ -93,6 +170,7 @@ pnpm dev          # Start development server
 pnpm build        # Build for production
 pnpm start        # Start production server
 pnpm lint         # Run ESLint
+pnpm format       # Run Prettier
 ```
 
 ## 🎨 Customization
