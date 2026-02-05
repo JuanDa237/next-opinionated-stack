@@ -1,0 +1,18 @@
+{
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, npm-shrinkwrap.json",
+    "tsconfig.json": "tsconfig.*.json, tsconfig.tsbuildinfo",
+    ".env": ".env.*",
+    "next.config.ts": "next.config.d.ts, next-env.d.ts",
+    "components.json": "postcss.config.mjs",
+    ".prettierrc": ".prettierignore"
+  },
+  // Formatting
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // Ignore Tailwind, Shadcn UI warnings
+  "css.lint.unknownAtRules": "ignore",
+  "tailwindCSS.lint.suggestCanonicalClasses": "ignore"
+}
