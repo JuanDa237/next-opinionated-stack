@@ -10,39 +10,38 @@ export default function Home() {
             Ship faster with an AI-ready, opinionated Next.js starter
           </h1>
           <p className="max-w-2xl text-lg text-muted-foreground">
-            A production-ready template that removes boilerplate and gets you
-            building immediately. Fork the repo, install dependencies, and focus
-            on features—not setup.
+            A production-ready template that removes boilerplate and gets you building immediately.
+            Fork the repo, install dependencies, and focus on features—not setup.
           </p>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[
             {
-              title: "Opinionated structure",
-              body: "Clear, scalable folder layout with proven patterns.",
+              title: 'Opinionated structure',
+              body: 'Clear, scalable folder layout with proven patterns.',
             },
             {
-              title: "AI-ready",
-              body: "MCP config + documentation structure for better AI context.",
+              title: 'AI-ready',
+              body: 'MCP config + documentation structure for better AI context.',
             },
             {
-              title: "Authentication",
-              body: "Better Auth preconfigured for modern auth flows.",
+              title: 'Authentication',
+              body: 'Better Auth preconfigured for modern auth flows.',
             },
             {
-              title: "UI system",
-              body: "shadcn/ui + Tailwind for accessible, composable UI.",
+              title: 'UI system',
+              body: 'shadcn/ui + Tailwind for accessible, composable UI.',
             },
             {
-              title: "TanStack suite",
-              body: "Form, Table, and Query ready for complex apps.",
+              title: 'TanStack suite',
+              body: 'Form, Table, and Query ready for complex apps.',
             },
             {
-              title: "Quality tooling",
-              body: "Zod validation and Husky hooks to keep quality high.",
+              title: 'Quality tooling',
+              body: 'Zod validation and Husky hooks to keep quality high.',
             },
-          ].map((item) => (
+          ].map(item => (
             <div
               key={item.title}
               className="rounded-xl border border-border/60 bg-card/40 p-5 shadow-sm"
@@ -65,10 +64,7 @@ export default function Home() {
               </span>
             </div>
             <p>
-              Then open{" "}
-              <span className="font-medium text-foreground">
-                http://localhost:3000
-              </span>{" "}
+              Then open <span className="font-medium text-foreground">http://localhost:3000</span>{' '}
               and start building.
             </p>
           </div>
