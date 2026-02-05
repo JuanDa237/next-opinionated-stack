@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { SearchForm } from '@/app/admin/(dashboard)/components/search-form';
+import { SearchForm } from './search-form';
 import { VersionSwitcher } from './version-switcher';
 import {
   Sidebar,
