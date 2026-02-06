@@ -21,46 +21,34 @@ import { authClient } from '@/lib/auth/auth-client';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 
-const formSchema = z
-  .object({
-    name: z.string().min(1, 'Full name is required.'),
-    email: z.email('Enter a valid email.').min(1, 'Email is required.'),
-    password: z.string().min(8, 'Password must be at least 8 characters.'),
-    confirmPassword: z.string().min(1, 'Please confirm your password.'),
-  })
-  .refine(data => data.password === data.confirmPassword, {
-    message: 'Passwords do not match.',
-    path: ['confirmPassword'],
-  });
+const formSchema = z.object({
+  email: z.email('Enter a valid email.').min(1, 'Email is required.'),
+  password: z.string().min(1, 'Password is required.'),
+});
 
-export function SignupForm({ className, ...props }: React.ComponentProps<'form'>) {
+export function SigninForm({ className, ...props }: React.ComponentProps<'form'>) {
   const router = useRouter();
 
-  const formId = 'signup-form';
+  const formId = 'signin-form';
 
   const form = useForm({
     defaultValues: {
-      name: '',
       email: '',
       password: '',
-      confirmPassword: '',
     },
     validators: {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      await authClient.signUp.email(
+      await authClient.signIn.email(
         {
           email: value.email,
           password: value.password,
-          name: value.name,
           callbackURL: '/admin',
         },
         {
           onError: error => {
-            toast.error(
-              error?.error?.message ?? 'We could not create your account. Please try again.'
-            );
+            toast.error(error?.error?.message ?? 'We could not sign you in. Please try again.');
           },
           onSuccess: () => {
             router.push('/admin');
@@ -83,32 +71,11 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
     >
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-2xl font-bold">Create your account</h1>
+          <h1 className="text-2xl font-bold">Sign in to your account</h1>
           <p className="text-muted-foreground text-sm text-balance">
-            Fill in the form below to create your account
+            Enter your email below to sign in to your account
           </p>
         </div>
-        <form.Field name="name">
-          {field => {
-            const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Full Name</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type="text"
-                  placeholder="John Doe"
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={event => field.handleChange(event.target.value)}
-                  aria-invalid={isInvalid}
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
         <form.Field name="email">
           {field => {
             const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
@@ -125,9 +92,6 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
                   onChange={event => field.handleChange(event.target.value)}
                   aria-invalid={isInvalid}
                 />
-                <FieldDescription>
-                  We&apos;ll use this to contact you. We will not share your email with anyone else.
-                </FieldDescription>
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
             );
@@ -138,7 +102,12 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
             const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
             return (
               <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                <div className="flex items-center">
+                  <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                  <a href="#" className="ml-auto text-sm underline-offset-4 hover:underline">
+                    Forgot your password?
+                  </a>
+                </div>
                 <Input
                   id={field.name}
                   name={field.name}
@@ -148,28 +117,6 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
                   onChange={event => field.handleChange(event.target.value)}
                   aria-invalid={isInvalid}
                 />
-                <FieldDescription>Must be at least 8 characters long.</FieldDescription>
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
-        <form.Field name="confirmPassword">
-          {field => {
-            const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Confirm Password</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type="password"
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={event => field.handleChange(event.target.value)}
-                  aria-invalid={isInvalid}
-                />
-                <FieldDescription>Please confirm your password.</FieldDescription>
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
             );
@@ -177,7 +124,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
         </form.Field>
         <Field>
           <Button type="submit" form={formId} disabled={form.state.isSubmitting}>
-            {form.state.isSubmitting ? 'Creating...' : 'Create Account'}
+            {form.state.isSubmitting ? 'Signing in...' : 'Sign in'}
           </Button>
         </Field>
         <FieldSeparator>Or continue with</FieldSeparator>
@@ -189,10 +136,13 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
                 fill="currentColor"
               />
             </svg>
-            Sign up with GitHub
+            Sign in with GitHub
           </Button>
-          <FieldDescription className="px-6 text-center">
-            Already have an account? <Link href="/admin/signin">Sign in</Link>
+          <FieldDescription className="text-center">
+            Don&apos;t have an account?{' '}
+            <Link href="/admin/signup" className="underline underline-offset-4">
+              Sign up
+            </Link>
           </FieldDescription>
         </Field>
       </FieldGroup>
