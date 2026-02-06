@@ -17,8 +17,8 @@ export default function Page() {
       <h1 className="text-3xl font-bold">Welcome {data?.user?.name}</h1>
       <Button
         className="mt-4"
-        onClick={() => {
-          authClient.signOut();
+        onClick={async () => {
+          await authClient.signOut();
           router.push('/admin/signin');
         }}
       >

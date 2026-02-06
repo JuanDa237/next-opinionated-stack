@@ -64,7 +64,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
             );
           },
           onSuccess: () => {
-            router.push('/admin');
+            router.push('/admin/email-verification');
           },
         }
       );
