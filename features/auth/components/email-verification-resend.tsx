@@ -6,10 +6,9 @@ import { Button } from '@/components/ui/button';
 import { authClient } from '@/lib/auth/auth-client';
 
 export function EmailVerificationResend({ email }: { email: string | null }) {
-  const [cooldownSeconds, setCooldownSeconds] = useState(0);
-  const [resendCount, setResendCount] = useState(0);
-
   const baseResendSeconds = 30;
+  const [cooldownSeconds, setCooldownSeconds] = useState(baseResendSeconds);
+  const [resendCount, setResendCount] = useState(1);
 
   useEffect(() => {
     if (cooldownSeconds <= 0) {
