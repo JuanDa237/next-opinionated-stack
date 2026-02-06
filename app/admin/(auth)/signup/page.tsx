@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 
-import { SignupForm } from '@/features/auth/components/signup-form';
+import { SignupForm } from '@/features/auth/containers/signup-form';
 
 import { auth } from '@/lib/auth';
 

@@ -20,7 +20,7 @@ import Link from 'next/link';
 import { authClient } from '@/lib/auth/auth-client';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { SocialAuthButtons } from './social-auth-buttons';
+import { SocialAuthButtons } from '../components/social-auth-buttons';
 
 const formSchema = z
   .object({
@@ -55,7 +55,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
           email: value.email,
           password: value.password,
           name: value.name,
-          callbackURL: '/admin',
+          callbackURL: '/admin/email-verification',
         },
         {
           onError: error => {
@@ -64,7 +64,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
             );
           },
           onSuccess: () => {
-            router.push('/admin/email-verification');
+            router.push(`/admin/email-verification?email=${encodeURIComponent(value.email)}`);
           },
         }
       );

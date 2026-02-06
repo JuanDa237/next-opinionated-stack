@@ -18,9 +18,9 @@ import { Input } from '@/components/ui/input';
 
 import Link from 'next/link';
 import { authClient } from '@/lib/auth/auth-client';
-import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { SocialAuthButtons } from './social-auth-buttons';
+import { useState } from 'react';
+import { SocialAuthButtons } from '../components/social-auth-buttons';
 
 const formSchema = z.object({
   email: z.email('Enter a valid email.').min(1, 'Email is required.'),
@@ -29,6 +29,7 @@ const formSchema = z.object({
 
 export function SigninForm({ className, ...props }: React.ComponentProps<'form'>) {
   const router = useRouter();
+  const [formError, setFormError] = useState<string | null>(null);
 
   const formId = 'signin-form';
 
@@ -41,6 +42,7 @@ export function SigninForm({ className, ...props }: React.ComponentProps<'form'>
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
+      setFormError(null);
       await authClient.signIn.email(
         {
           email: value.email,
@@ -49,7 +51,7 @@ export function SigninForm({ className, ...props }: React.ComponentProps<'form'>
         },
         {
           onError: error => {
-            toast.error(error?.error?.message ?? 'We could not sign you in. Please try again.');
+            setFormError(error?.error?.message ?? 'We could not sign you in. Please try again.');
           },
           onSuccess: () => {
             router.push('/admin');
@@ -77,6 +79,11 @@ export function SigninForm({ className, ...props }: React.ComponentProps<'form'>
             Enter your email below to sign in to your account
           </p>
         </div>
+        {formError ? (
+          <div className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            {formError}
+          </div>
+        ) : null}
         <form.Field name="email">
           {field => {
             const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
