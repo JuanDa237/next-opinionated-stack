@@ -1,29 +1,138 @@
-'use client';
-
 import { Button } from '@/components/ui/button';
-import { authClient } from '@/lib/auth/auth-client';
-import { useRouter } from 'next/navigation';
+import { Separator } from '@/components/ui/separator';
+import { ProfileSection } from '@/features/auth/components/profile/profile';
+import { SecuritySection } from '@/features/auth/components/profile/security';
+import Link from 'next/link';
 
 export default function Page() {
-  const router = useRouter();
-  const { data, isPending } = authClient.useSession();
-
-  if (isPending) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <>
-      <h1 className="text-3xl font-bold">Welcome {data?.user?.name}</h1>
-      <Button
-        className="mt-4"
-        onClick={async () => {
-          await authClient.signOut();
-          router.push('/admin/signin');
-        }}
-      >
-        Sign Out
-      </Button>
-    </>
+    <div className="relative">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(1200px_400px_at_10%_-10%,rgba(228,27,30,0.28),transparent),radial-gradient(900px_420px_at_85%_0%,rgba(252,67,70,0.18),transparent)]" />
+      <div className="relative mx-auto w-full max-w-6xl px-6 py-10">
+        <div className="flex flex-col gap-2">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+            Profile center
+          </p>
+          <h1 className="text-4xl font-semibold tracking-tight">Your account, your rules</h1>
+          <p className="max-w-2xl text-sm text-muted-foreground">
+            Update your details, secure your access, and manage connected accounts in one place.
+          </p>
+        </div>
+
+        <div className="mt-10 grid gap-8 lg:grid-cols-[240px_1fr]">
+          <aside className="sticky top-6 h-fit max-h-[calc(100vh-4rem)] overflow-auto rounded-2xl border bg-background/80 p-4 backdrop-blur">
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+              Settings
+            </p>
+            <nav className="mt-4 flex flex-col gap-1 text-sm">
+              {[
+                { label: 'Profile', href: '#profile' },
+                { label: 'Security', href: '#security' },
+                { label: 'Sessions', href: '#sessions' },
+                { label: 'Accounts', href: '#accounts' },
+                { label: 'Danger Zone', href: '#danger-zone' },
+              ].map(item => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="rounded-lg px-3 py-2 text-left font-medium transition hover:bg-muted"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+          </aside>
+
+          <div className="space-y-8">
+            <ProfileSection />
+
+            <SecuritySection />
+
+            <section id="sessions" className="grid gap-6 lg:grid-cols-2">
+              <div
+                id="accounts"
+                className="rounded-2xl border bg-background/80 p-6 shadow-sm backdrop-blur"
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h2 className="text-xl font-semibold">Sessions</h2>
+                    <p className="text-sm text-muted-foreground">
+                      See where you are logged in right now.
+                    </p>
+                  </div>
+                  <Button variant="outline">Sign out all</Button>
+                </div>
+                <Separator className="my-6" />
+                <div className="space-y-4 text-sm">
+                  {[
+                    'MacBook Pro · Medellin · 2 minutes ago',
+                    'iPhone 15 · Bogota · 3 hours ago',
+                    'Chrome on Windows · Miami · Yesterday',
+                  ].map(session => (
+                    <div
+                      key={session}
+                      className="flex items-center justify-between rounded-xl border border-dashed px-4 py-3"
+                    >
+                      <span>{session}</span>
+                      <Button variant="ghost" size="sm">
+                        Revoke
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-2xl border bg-background/80 p-6 shadow-sm backdrop-blur">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h2 className="text-xl font-semibold">Connected accounts</h2>
+                    <p className="text-sm text-muted-foreground">
+                      Control which providers can access your data.
+                    </p>
+                  </div>
+                  <Button variant="secondary">Add account</Button>
+                </div>
+                <Separator className="my-6" />
+                <div className="space-y-4 text-sm">
+                  {['Google · Connected', 'GitHub · Connected', 'Slack · Not connected'].map(
+                    account => (
+                      <div
+                        key={account}
+                        className="flex items-center justify-between rounded-xl border border-dashed px-4 py-3"
+                      >
+                        <span>{account}</span>
+                        <Button variant="outline" size="sm">
+                          Manage
+                        </Button>
+                      </div>
+                    )
+                  )}
+                </div>
+              </div>
+            </section>
+
+            <section
+              id="danger-zone"
+              className="rounded-2xl border border-destructive/40 bg-destructive/5 p-6 shadow-sm"
+            >
+              <h2 className="text-xl font-semibold text-destructive">Danger zone</h2>
+              <p className="text-sm text-muted-foreground">
+                These actions are irreversible. Proceed with caution.
+              </p>
+              <Separator className="my-6" />
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm font-medium">Delete this account</p>
+                  <p className="text-xs text-muted-foreground">
+                    Permanently remove your data and revoke all access.
+                  </p>
+                </div>
+                <Button variant="destructive">Delete account</Button>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

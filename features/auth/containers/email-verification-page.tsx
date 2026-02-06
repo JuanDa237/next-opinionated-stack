@@ -4,9 +4,9 @@ import { useSearchParams } from 'next/navigation';
 
 import { authClient } from '@/lib/auth/auth-client';
 
-import { EmailVerifiedRedirect } from '@/features/auth/components/email-verified-redirect';
-import { EmailVerificationResend } from '@/features/auth/components/email-verification-resend';
-import { EmailVerificationSkeleton } from '@/features/auth/components/email-verification-skeleton';
+import { EmailVerifiedRedirect } from '@/features/auth/components/verification/email-verified-redirect';
+import { EmailVerificationResend } from '@/features/auth/components/verification/email-verification-resend';
+import { EmailVerificationSkeleton } from '@/features/auth/components/verification/email-verification-skeleton';
 
 export function EmailVerificationPage() {
   const { data, isPending } = authClient.useSession();

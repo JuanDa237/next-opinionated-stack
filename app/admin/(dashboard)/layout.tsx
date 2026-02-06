@@ -20,7 +20,7 @@ export default async function DashboardLayout({ children }: PropsWithChildren) {
       <AppSidebar />
       <SidebarInset>
         <DashboardHeader />
-        <div className="p-4">{children}</div>
+        {children}
       </SidebarInset>
     </SidebarProvider>
   );
