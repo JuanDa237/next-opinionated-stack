@@ -1,46 +1,42 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-import { Button } from '@/components/ui/button';
+import { CountdownSubmitButton } from '@/components/common/countdown-submit-button';
 import { authClient } from '@/lib/auth/auth-client';
 
 export function EmailVerificationResend({ email }: { email: string | null }) {
-  const baseResendSeconds = 30;
-  const [cooldownSeconds, setCooldownSeconds] = useState(baseResendSeconds);
-  const [resendCount, setResendCount] = useState(1);
-
-  useEffect(() => {
-    if (cooldownSeconds <= 0) {
-      return;
-    }
-
-    const timer = setTimeout(() => {
-      setCooldownSeconds(current => current - 1);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [cooldownSeconds]);
+  const [cooldownKey, setCooldownKey] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
-    <Button
+    <CountdownSubmitButton
       className="mt-4"
       variant="outline"
-      disabled={!email || cooldownSeconds > 0}
+      type="button"
+      disabled={!email}
+      isSubmitting={isSubmitting}
+      cooldownKey={cooldownKey}
+      baseResendSeconds={30}
+      initialCooldownSeconds={30}
+      label="Resend Verification Email"
+      cooldownLabel={seconds => `Resend available in ${seconds}s`}
       onClick={async () => {
-        if (!email || cooldownSeconds > 0) {
+        if (!email) {
           return;
         }
 
-        await authClient.sendVerificationEmail({ email, callbackURL: '/admin/email-verification' });
-        const nextCount = resendCount + 1;
-        setResendCount(nextCount);
-        setCooldownSeconds(baseResendSeconds * nextCount);
+        setIsSubmitting(true);
+        try {
+          await authClient.sendVerificationEmail({
+            email,
+            callbackURL: '/admin/email-verification',
+          });
+          setCooldownKey(current => current + 1);
+        } finally {
+          setIsSubmitting(false);
+        }
       }}
-    >
-      {cooldownSeconds > 0
-        ? `Resend available in ${cooldownSeconds}s`
-        : 'Resend Verification Email'}
-    </Button>
+    />
   );
 }

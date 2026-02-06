@@ -21,6 +21,7 @@ import { authClient } from '@/lib/auth/auth-client';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { SocialAuthButtons } from '../components/social-auth-buttons';
+import { PasswordInput } from '@/components/common/password-input';
 
 const formSchema = z.object({
   email: z.email('Enter a valid email.').min(1, 'Email is required.'),
@@ -112,14 +113,16 @@ export function SigninForm({ className, ...props }: React.ComponentProps<'form'>
               <Field data-invalid={isInvalid}>
                 <div className="flex items-center">
                   <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                  <a href="#" className="ml-auto text-sm underline-offset-4 hover:underline">
+                  <Link
+                    href="/admin/forgot-password"
+                    className="ml-auto text-sm underline-offset-4 hover:underline"
+                  >
                     Forgot your password?
-                  </a>
+                  </Link>
                 </div>
-                <Input
+                <PasswordInput
                   id={field.name}
                   name={field.name}
-                  type="password"
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={event => field.handleChange(event.target.value)}

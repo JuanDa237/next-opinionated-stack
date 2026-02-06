@@ -21,6 +21,7 @@ import { authClient } from '@/lib/auth/auth-client';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { SocialAuthButtons } from '../components/social-auth-buttons';
+import { PasswordInput } from '@/components/common/password-input';
 
 const formSchema = z
   .object({
@@ -140,10 +141,9 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
             return (
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                <Input
+                <PasswordInput
                   id={field.name}
                   name={field.name}
-                  type="password"
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={event => field.handleChange(event.target.value)}
@@ -161,10 +161,9 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
             return (
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>Confirm Password</FieldLabel>
-                <Input
+                <PasswordInput
                   id={field.name}
                   name={field.name}
-                  type="password"
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={event => field.handleChange(event.target.value)}
