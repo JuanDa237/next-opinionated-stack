@@ -1,8 +1,12 @@
 'use client';
 
-import { CountdownSubmitButton } from '@/components/common/countdown-submit-button';
-import { authClient } from '@/lib/auth/auth-client';
 import { useState } from 'react';
+
+// Components
+import { CountdownSubmitButton } from '@/components/common/countdown-submit-button';
+
+// Libs
+import { authClient } from '@/lib/auth/auth-client';
 
 export function SetPasswordButton() {
   const { data } = authClient.useSession();

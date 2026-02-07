@@ -1,5 +1,6 @@
 'use client';
 
+// Components
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -12,6 +13,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+
+// Libs
 import { authClient } from '@/lib/auth/auth-client';
 
 export function ProfileSection() {
@@ -19,6 +23,16 @@ export function ProfileSection() {
 
   const name = data?.user.name || '';
   const email = data?.user.email || '';
+
+  const avatarImage = data?.user.image || '';
+  const avatarFallback =
+    name
+      .split(' ')
+      .map(name => name[0])
+      .join('')
+      .toUpperCase() ?? 'JD';
+
+  // TODO: This form should save changes.
 
   return (
     <Card id="profile" className="bg-background/80 shadow-sm backdrop-blur">
@@ -33,13 +47,10 @@ export function ProfileSection() {
       </CardHeader>
       <CardContent>
         <div className="flex flex-wrap items-center gap-4 rounded-2xl border border-dashed px-4 py-3">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted text-base font-semibold">
-            {name
-              .split(' ')
-              .map(name => name[0])
-              .join('')
-              .toUpperCase() ?? 'JD'}
-          </div>
+          <Avatar>
+            <AvatarImage src={avatarImage} alt={name} className="grayscale" />
+            <AvatarFallback>{avatarFallback}</AvatarFallback>
+          </Avatar>
           <div>
             <p className="text-sm font-semibold">{name}</p>
             <p className="text-xs text-muted-foreground">{email}</p>

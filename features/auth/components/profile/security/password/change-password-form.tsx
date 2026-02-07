@@ -1,16 +1,18 @@
 'use client';
 
+import { useState } from 'react';
+
+// Libraries
 import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
-
 import { cn } from '@/lib/utils';
+import { authClient } from '@/lib/auth/auth-client';
 
+// Components
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { PasswordInput } from '@/components/common/password-input';
-import { authClient } from '@/lib/auth/auth-client';
-import { useState } from 'react';
 
 const formSchema = z.object({
   currentPassword: z.string().min(1, 'Current password is required.'),
@@ -21,6 +23,7 @@ const formSchema = z.object({
 export function ChangePasswordForm({ className, ...props }: React.ComponentProps<'form'>) {
   const [formError, setFormError] = useState<string | null>(null);
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const formId = 'change-password-form';
 
@@ -37,24 +40,29 @@ export function ChangePasswordForm({ className, ...props }: React.ComponentProps
       setFormError(null);
       setFormSuccess(null);
 
-      await authClient.changePassword(
-        {
-          currentPassword: value.currentPassword,
-          newPassword: value.newPassword,
-          revokeOtherSessions: value.revokeOtherSessions,
-        },
-        {
-          onError: error => {
-            setFormError(
-              error?.error?.message ?? 'We could not update your password. Please try again.'
-            );
+      setIsSubmitting(true);
+      try {
+        await authClient.changePassword(
+          {
+            currentPassword: value.currentPassword,
+            newPassword: value.newPassword,
+            revokeOtherSessions: value.revokeOtherSessions,
           },
-          onSuccess: () => {
-            setFormSuccess('Your password has been updated.');
-            form.reset();
-          },
-        }
-      );
+          {
+            onError: error => {
+              setFormError(
+                error?.error?.message ?? 'We could not update your password. Please try again.'
+              );
+            },
+            onSuccess: () => {
+              setFormSuccess('Your password has been updated.');
+              form.reset();
+            },
+          }
+        );
+      } finally {
+        setIsSubmitting(false);
+      }
     },
   });
 
@@ -146,7 +154,7 @@ export function ChangePasswordForm({ className, ...props }: React.ComponentProps
                     onCheckedChange={checked => field.handleChange(checked === true)}
                   />
                   <FieldLabel htmlFor={field.name} className="flex-none">
-                    Revoke other sessions
+                    Sign Out of all other sessions
                   </FieldLabel>
                 </Field>
               );
@@ -154,8 +162,8 @@ export function ChangePasswordForm({ className, ...props }: React.ComponentProps
           </form.Field>
         </div>
         <Field>
-          <Button type="submit" form={formId} disabled={form.state.isSubmitting}>
-            {form.state.isSubmitting ? 'Updating...' : 'Update password'}
+          <Button type="submit" form={formId} disabled={isSubmitting}>
+            {isSubmitting ? 'Updating...' : 'Update password'}
           </Button>
         </Field>
       </FieldGroup>

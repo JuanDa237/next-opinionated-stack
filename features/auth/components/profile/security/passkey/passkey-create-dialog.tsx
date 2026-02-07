@@ -1,8 +1,15 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+
+// Libs
 import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
+import { authClient } from '@/lib/auth/auth-client';
+import { toast } from 'sonner';
 
+// Components
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
@@ -17,10 +24,6 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import { authClient } from '@/lib/auth/auth-client';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 type PasskeyCreateDialogProps = {
   triggerLabel?: string;

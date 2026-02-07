@@ -1,13 +1,18 @@
 'use client';
+import { useRouter } from 'next/navigation';
 
+// Components
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { authClient } from '@/lib/auth/auth-client';
+
+// Libs
 import { Session } from 'better-auth';
-import { Monitor, Smartphone, Trash } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { UAParser } from 'ua-parser-js';
+
+// Icons
+import { Monitor, Smartphone, Trash } from 'lucide-react';
 
 export function SessionCard({
   session,

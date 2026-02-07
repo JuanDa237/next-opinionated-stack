@@ -8,10 +8,10 @@ import { Separator } from '@/components/ui/separator';
 import { auth } from '@/lib/auth';
 
 // Sections
-import { ChangePasswordForm } from './change-password-form';
-import { SetPassword } from './security/password/set-password';
-import { TwoFactorDialogWrapper } from './security/two-factor/two-factor-dialog-wrapper';
-import { Passkey } from './security/passkey/passkey';
+import { ChangePasswordDialog } from './password/change-password-dialog';
+import { SetPassword } from './password/set-password';
+import { TwoFactorDialogWrapper } from './two-factor/two-factor-dialog-wrapper';
+import { Passkey } from './passkey/passkey';
 
 export async function SecuritySection() {
   const accounts = await auth.api.listUserAccounts({ headers: await headers() });
@@ -27,7 +27,7 @@ export async function SecuritySection() {
       <CardContent>
         <Separator className="mb-6" />
 
-        {havePassword ? <ChangePasswordForm /> : <SetPassword />}
+        {havePassword ? <ChangePasswordDialog /> : <SetPassword />}
 
         <Separator className="my-6" />
 

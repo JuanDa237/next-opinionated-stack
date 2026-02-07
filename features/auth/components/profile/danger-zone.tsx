@@ -1,5 +1,6 @@
 'use client';
 
+// Components
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,6 +15,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+
+// Libs
 import { authClient } from '@/lib/auth/auth-client';
 import { toast } from 'sonner';
 

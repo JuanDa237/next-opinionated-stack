@@ -1,9 +1,13 @@
+import { headers } from 'next/headers';
+
+// Components
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { AccountCard } from './account-card';
+
+// Libs
 import { auth } from '@/lib/auth';
 import { SUPPORTED_OAUTH_PROVIDERS } from '@/lib/auth/o-auth-providers';
-import { headers } from 'next/headers';
-import { AccountCard } from './actions/account-card';
 
 export async function AccountsSection() {
   const accounts = await auth.api.listUserAccounts({ headers: await headers() });

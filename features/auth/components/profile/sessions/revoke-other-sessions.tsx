@@ -16,7 +16,7 @@ export function RevokeOtherSessionsButton() {
   }
 
   return (
-    <Button variant="outline" onClick={revokeOtherSessions}>
+    <Button className="ml-2" variant="outline" onClick={revokeOtherSessions}>
       Sign out all
     </Button>
   );

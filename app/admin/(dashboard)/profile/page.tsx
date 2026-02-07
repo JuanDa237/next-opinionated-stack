@@ -1,9 +1,11 @@
-import { AccountsSection } from '@/features/auth/components/profile/accounts';
-import { DangerZone } from '@/features/auth/components/profile/danger-zone';
-import { ProfileSection } from '@/features/auth/components/profile/profile';
-import { SecuritySection } from '@/features/auth/components/profile/security';
-import { SessionsSection } from '@/features/auth/components/profile/sessions';
 import Link from 'next/link';
+
+// Sections
+import { AccountsSection } from '@/features/auth/components/profile/accounts/accounts';
+import { DangerZone } from '@/features/auth/components/profile/danger-zone';
+import { SecuritySection } from '@/features/auth/components/profile/security/security';
+import { SessionsSection } from '@/features/auth/components/profile/sessions/sessions';
+import { ProfileSection } from '@/features/auth/components/profile/profile';
 
 export default function Page() {
   return (

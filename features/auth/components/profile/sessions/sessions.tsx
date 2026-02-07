@@ -1,9 +1,14 @@
+import { headers } from 'next/headers';
+
+// Components
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+
+import { RevokeOtherSessionsButton } from './revoke-other-sessions';
+import { SessionCard } from './session-card';
+
+// Libs
 import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
-import { SessionCard } from './actions/session-card';
-import { RevokeOtherSessionsButton } from './actions/revoke-other-sessions';
 
 export async function SessionsSection() {
   const currentSession = await auth.api.getSession({ headers: await headers() });
@@ -31,22 +36,6 @@ export async function SessionsSection() {
       <CardContent>
         <Separator className="mb-6" />
         <div className="space-y-4 text-sm">
-          {/* {[
-            'MacBook Pro · Medellin · 2 minutes ago',
-            'iPhone 15 · Bogota · 3 hours ago',
-            'Chrome on Windows · Miami · Yesterday',
-          ].map(session => (
-            <div
-              key={session}
-              className="flex items-center justify-between rounded-xl border border-dashed px-4 py-3"
-            >
-              <span>{session}</span>
-              <Button variant="ghost" size="sm">
-                Revoke
-              </Button>
-            </div>
-          ))} */}
-
           {orderedSessions.map(session => (
             <SessionCard
               key={session.id}
