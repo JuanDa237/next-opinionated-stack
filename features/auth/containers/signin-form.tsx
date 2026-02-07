@@ -19,9 +19,10 @@ import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import { authClient } from '@/lib/auth/auth-client';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SocialAuthButtons } from '../components/social-auth-buttons';
 import { PasswordInput } from '@/components/common/password-input';
+import { Fingerprint } from 'lucide-react';
 
 const formSchema = z.object({
   email: z.email('Enter a valid email.').min(1, 'Email is required.'),
@@ -100,7 +101,7 @@ export function SigninForm({ className, ...props }: React.ComponentProps<'form'>
                   onBlur={field.handleBlur}
                   onChange={event => field.handleChange(event.target.value)}
                   aria-invalid={isInvalid}
-                  autoComplete="username"
+                  autoComplete="email webauthn"
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
@@ -128,7 +129,7 @@ export function SigninForm({ className, ...props }: React.ComponentProps<'form'>
                   onBlur={field.handleBlur}
                   onChange={event => field.handleChange(event.target.value)}
                   aria-invalid={isInvalid}
-                  autoComplete="current-password"
+                  autoComplete="current-password webauthn"
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
@@ -143,6 +144,7 @@ export function SigninForm({ className, ...props }: React.ComponentProps<'form'>
         <FieldSeparator>Or continue with</FieldSeparator>
         <Field>
           <SocialAuthButtons />
+          <PasskeySigninButton />
           <FieldDescription className="text-center">
             Don&apos;t have an account?{' '}
             <Link href="/admin/signup" className="underline underline-offset-4">
@@ -152,5 +154,38 @@ export function SigninForm({ className, ...props }: React.ComponentProps<'form'>
         </Field>
       </FieldGroup>
     </form>
+  );
+}
+
+function PasskeySigninButton() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // TODO: This is automatic way is not working
+    if (
+      !PublicKeyCredential.isConditionalMediationAvailable ||
+      !PublicKeyCredential.isConditionalMediationAvailable()
+    ) {
+      return;
+    }
+
+    void authClient.signIn.passkey({ autoFill: true });
+  }, []);
+
+  return (
+    <Button
+      type="button"
+      variant="outline"
+      onClick={() => {
+        authClient.signIn.passkey(undefined, {
+          onSuccess: () => {
+            router.push('/admin');
+          },
+        });
+      }}
+    >
+      <Fingerprint />
+      Passkey (Browser)
+    </Button>
   );
 }

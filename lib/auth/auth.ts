@@ -4,8 +4,11 @@ import { db } from "@/lib/db/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { createAuthMiddleware } from "better-auth/api";
 import { twoFactor } from "better-auth/plugins/two-factor";
+import { passkey } from "@better-auth/passkey"
+
 
 export const auth = betterAuth({
+    appName: "Next Opinionated Stack",
     baseURL: process.env.BETTER_AUTH_URL,
     database: drizzleAdapter(db, {
         provider: "pg",
@@ -70,10 +73,14 @@ export const auth = betterAuth({
             }
         })
     },
-    plugins: [nextCookies(), twoFactor({
-        totpOptions: {
-            // TODO: Adjust these options to default, this was need because work pc time offset issues
-            period: 300,
-        }
-    })],
+    plugins: [
+        nextCookies(),
+        twoFactor({
+            totpOptions: {
+                // TODO: Adjust these options to default, this was need because work pc time offset issues
+                period: 300,
+            }
+        }),
+        passkey(),
+    ],
 });

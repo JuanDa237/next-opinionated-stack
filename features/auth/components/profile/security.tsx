@@ -5,6 +5,8 @@ import { headers } from 'next/headers';
 import { SetPasswordButton } from './actions/set-password-button';
 import { ChangePasswordForm } from './change-password-form';
 import { TwoFactorForm } from './two-factor-form';
+import { PasskeyCreateDialog } from './passkey-create-dialog';
+import { PasskeyList } from './passkey-list';
 
 export async function SecuritySection() {
   const accounts = await auth.api.listUserAccounts({ headers: await headers() });
@@ -25,6 +27,10 @@ export async function SecuritySection() {
         <Separator className="my-6" />
 
         <TwoFactorAuth />
+
+        <Separator className="my-6" />
+
+        <PasskeyAuth />
       </CardContent>
     </Card>
   );
@@ -54,13 +60,28 @@ async function TwoFactorAuth() {
 
   return (
     <div className="flex flex-col">
-      <h3 className="text-sm font-semibold">Security Note</h3>
+      <h3 className="text-sm font-semibold">Two-Factor Authentication</h3>
       <p className="text-sm text-muted-foreground">
         Enable a 2FA app for an extra layer of protection.
         <br />
         This will require you to enter a code from your authenticator app each time you sign in.
       </p>
       <TwoFactorForm isEnabled={session.user.twoFactorEnabled ?? false} />
+    </div>
+  );
+}
+
+async function PasskeyAuth() {
+  const passkeys = await auth.api.listPasskeys({ headers: await headers() });
+
+  return (
+    <div className="flex flex-col">
+      <h3 className="text-sm font-semibold">Passkeys</h3>
+      <p className="text-sm text-muted-foreground">
+        Manage your passkey authentication methods for a secure and passwordless login experience.
+      </p>
+      <PasskeyList passkeys={passkeys} />
+      <PasskeyCreateDialog />
     </div>
   );
 }
