@@ -1,7 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { AccountsSection } from '@/features/auth/components/profile/accounts';
 import { ProfileSection } from '@/features/auth/components/profile/profile';
 import { SecuritySection } from '@/features/auth/components/profile/security';
+import { SessionsSection } from '@/features/auth/components/profile/sessions';
 import Link from 'next/link';
 
 export default function Page() {
@@ -48,67 +50,9 @@ export default function Page() {
 
             <SecuritySection />
 
-            <section id="sessions" className="grid gap-6 lg:grid-cols-2">
-              <div
-                id="accounts"
-                className="rounded-2xl border bg-background/80 p-6 shadow-sm backdrop-blur"
-              >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h2 className="text-xl font-semibold">Sessions</h2>
-                    <p className="text-sm text-muted-foreground">
-                      See where you are logged in right now.
-                    </p>
-                  </div>
-                  <Button variant="outline">Sign out all</Button>
-                </div>
-                <Separator className="my-6" />
-                <div className="space-y-4 text-sm">
-                  {[
-                    'MacBook Pro · Medellin · 2 minutes ago',
-                    'iPhone 15 · Bogota · 3 hours ago',
-                    'Chrome on Windows · Miami · Yesterday',
-                  ].map(session => (
-                    <div
-                      key={session}
-                      className="flex items-center justify-between rounded-xl border border-dashed px-4 py-3"
-                    >
-                      <span>{session}</span>
-                      <Button variant="ghost" size="sm">
-                        Revoke
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-2xl border bg-background/80 p-6 shadow-sm backdrop-blur">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h2 className="text-xl font-semibold">Connected accounts</h2>
-                    <p className="text-sm text-muted-foreground">
-                      Control which providers can access your data.
-                    </p>
-                  </div>
-                  <Button variant="secondary">Add account</Button>
-                </div>
-                <Separator className="my-6" />
-                <div className="space-y-4 text-sm">
-                  {['Google · Connected', 'GitHub · Connected', 'Slack · Not connected'].map(
-                    account => (
-                      <div
-                        key={account}
-                        className="flex items-center justify-between rounded-xl border border-dashed px-4 py-3"
-                      >
-                        <span>{account}</span>
-                        <Button variant="outline" size="sm">
-                          Manage
-                        </Button>
-                      </div>
-                    )
-                  )}
-                </div>
-              </div>
+            <section className="grid gap-6 lg:grid-cols-2">
+              <SessionsSection />
+              <AccountsSection />
             </section>
 
             <section
