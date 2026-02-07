@@ -100,6 +100,7 @@ export function SigninForm({ className, ...props }: React.ComponentProps<'form'>
                   onBlur={field.handleBlur}
                   onChange={event => field.handleChange(event.target.value)}
                   aria-invalid={isInvalid}
+                  autoComplete="username"
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
@@ -127,6 +128,7 @@ export function SigninForm({ className, ...props }: React.ComponentProps<'form'>
                   onBlur={field.handleBlur}
                   onChange={event => field.handleChange(event.target.value)}
                   aria-invalid={isInvalid}
+                  autoComplete="current-password"
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>

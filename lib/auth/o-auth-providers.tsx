@@ -15,6 +15,14 @@ export const SUPPORTED_OAUTH_PROVIDER_DETAILS: Record<
 > = {
   google: {
     name: 'Google',
-    Icon: () => <Image src="/google-icon.svg" alt="Google" width={24} height={24} />,
+    Icon: () => (
+      <Image
+        src="/google-icon.svg"
+        alt="Google"
+        width={24}
+        height={24}
+        style={{ width: 24, height: 24 }}
+      />
+    ),
   },
 };

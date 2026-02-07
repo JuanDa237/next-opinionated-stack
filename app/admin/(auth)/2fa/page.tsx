@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 
-import { ForgotPasswordForm } from '@/features/auth/containers/forgot-password-form';
+import { TwoFactorChallengeForm } from '@/features/auth/containers/two-factor-challenge-form';
 import { auth } from '@/lib/auth';
 
 export default async function Page() {
@@ -11,5 +11,5 @@ export default async function Page() {
     redirect('/admin');
   }
 
-  return <ForgotPasswordForm />;
+  return <TwoFactorChallengeForm />;
 }

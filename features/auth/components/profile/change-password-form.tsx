@@ -69,6 +69,14 @@ export function ChangePasswordForm({ className, ...props }: React.ComponentProps
       }}
       {...props}
     >
+      <input
+        className="sr-only"
+        type="text"
+        name="username"
+        autoComplete="username"
+        tabIndex={-1}
+        aria-hidden="true"
+      />
       <FieldGroup>
         {formSuccess ? (
           <div className="rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-700">
@@ -97,6 +105,7 @@ export function ChangePasswordForm({ className, ...props }: React.ComponentProps
                     onBlur={field.handleBlur}
                     onChange={event => field.handleChange(event.target.value)}
                     aria-invalid={isInvalid}
+                    autoComplete="current-password"
                   />
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
@@ -118,6 +127,7 @@ export function ChangePasswordForm({ className, ...props }: React.ComponentProps
                     onBlur={field.handleBlur}
                     onChange={event => field.handleChange(event.target.value)}
                     aria-invalid={isInvalid}
+                    autoComplete="new-password"
                   />
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>

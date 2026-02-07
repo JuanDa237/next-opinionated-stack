@@ -124,7 +124,7 @@ export function ResetPasswordForm({ className, ...props }: React.ComponentProps<
         ) : null}
         {redirectSeconds !== null ? (
           <div className="rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-700">
-            Password reset successful. Redirecting to login in {redirectSeconds}s.
+            Password reset successful. Redirecting in {redirectSeconds}s.
           </div>
         ) : null}
 
