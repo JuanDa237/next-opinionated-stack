@@ -4,9 +4,14 @@ import { JSX } from 'react';
 export const SUPPORTED_OAUTH_PROVIDERS = ['google'] as const;
 export type SupportedOAuthProvider = (typeof SUPPORTED_OAUTH_PROVIDERS)[number];
 
+export type OAuthProviderDetails = {
+  name: string;
+  Icon: () => JSX.Element;
+};
+
 export const SUPPORTED_OAUTH_PROVIDER_DETAILS: Record<
   SupportedOAuthProvider,
-  { name: string; Icon: () => JSX.Element }
+  OAuthProviderDetails
 > = {
   google: {
     name: 'Google',
