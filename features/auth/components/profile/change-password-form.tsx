@@ -69,6 +69,7 @@ export function ChangePasswordForm({ className, ...props }: React.ComponentProps
       }}
       {...props}
     >
+      {/* Chrome autofill */}
       <input
         className="sr-only"
         type="text"

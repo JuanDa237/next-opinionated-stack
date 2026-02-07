@@ -1,27 +1,29 @@
 'use client';
 
+import Link from 'next/link';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+// Libs
 import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
-
 import { cn } from '@/lib/utils';
+import { authClient } from '@/lib/auth/auth-client';
 
+// Components
 import { Button } from '@/components/ui/button';
 import {
   Field,
   FieldDescription,
   FieldError,
-  FieldGroup,
   FieldLabel,
   FieldSeparator,
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 
-import Link from 'next/link';
-import { authClient } from '@/lib/auth/auth-client';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
 import { SocialAuthButtons } from '../components/social-auth-buttons';
 import { PasswordInput } from '@/components/common/password-input';
+import { AuthPageDescription } from '../components/auth-page-description';
 
 const formSchema = z
   .object({
@@ -39,6 +41,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
   const router = useRouter();
 
   const formId = 'signup-form';
+  const [formError, setFormError] = useState<string | null>(null);
 
   const form = useForm({
     defaultValues: {
@@ -60,7 +63,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
         },
         {
           onError: error => {
-            toast.error(
+            setFormError(
               error?.error?.message ?? 'We could not create your account. Please try again.'
             );
           },
@@ -83,13 +86,11 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
       }}
       {...props}
     >
-      <FieldGroup>
-        <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-2xl font-bold">Create your account</h1>
-          <p className="text-muted-foreground text-sm text-balance">
-            Fill in the form below to create your account
-          </p>
-        </div>
+      <AuthPageDescription
+        title="Create your account"
+        description="Fill in the form below to create your account"
+        errorMessage={formError}
+      >
         <form.Field name="name">
           {field => {
             const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
@@ -105,6 +106,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
                   onBlur={field.handleBlur}
                   onChange={event => field.handleChange(event.target.value)}
                   aria-invalid={isInvalid}
+                  autoComplete="name"
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
@@ -126,6 +128,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
                   onBlur={field.handleBlur}
                   onChange={event => field.handleChange(event.target.value)}
                   aria-invalid={isInvalid}
+                  autoComplete="email"
                 />
                 <FieldDescription>
                   We&apos;ll use this to contact you. We will not share your email with anyone else.
@@ -140,7 +143,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
             const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
             return (
               <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                <FieldLabel htmlFor={field.name}>New Password</FieldLabel>
                 <PasswordInput
                   id={field.name}
                   name={field.name}
@@ -148,6 +151,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
                   onBlur={field.handleBlur}
                   onChange={event => field.handleChange(event.target.value)}
                   aria-invalid={isInvalid}
+                  autoComplete="new-password"
                 />
                 <FieldDescription>Must be at least 8 characters long.</FieldDescription>
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -168,6 +172,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
                   onBlur={field.handleBlur}
                   onChange={event => field.handleChange(event.target.value)}
                   aria-invalid={isInvalid}
+                  autoComplete="new-password"
                 />
                 <FieldDescription>Please confirm your password.</FieldDescription>
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -187,7 +192,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
             Already have an account? <Link href="/admin/signin">Sign in</Link>
           </FieldDescription>
         </Field>
-      </FieldGroup>
+      </AuthPageDescription>
     </form>
   );
 }

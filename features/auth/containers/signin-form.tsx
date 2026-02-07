@@ -1,28 +1,30 @@
 'use client';
 
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+
+// Libs
 import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
-
 import { cn } from '@/lib/utils';
+import { authClient } from '@/lib/auth/auth-client';
 
+// Components
 import { Button } from '@/components/ui/button';
 import {
   Field,
   FieldDescription,
   FieldError,
-  FieldGroup,
   FieldLabel,
   FieldSeparator,
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 
-import Link from 'next/link';
-import { authClient } from '@/lib/auth/auth-client';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { SocialAuthButtons } from '../components/social-auth-buttons';
 import { PasswordInput } from '@/components/common/password-input';
-import { Fingerprint } from 'lucide-react';
+import { AuthPageDescription } from '../components/auth-page-description';
+import { PasskeySigninButton } from '../components/signin/passkey-signin-button';
 
 const formSchema = z.object({
   email: z.email('Enter a valid email.').min(1, 'Email is required.'),
@@ -74,18 +76,11 @@ export function SigninForm({ className, ...props }: React.ComponentProps<'form'>
       }}
       {...props}
     >
-      <FieldGroup>
-        <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-2xl font-bold">Sign in to your account</h1>
-          <p className="text-muted-foreground text-sm text-balance">
-            Enter your email below to sign in to your account
-          </p>
-        </div>
-        {formError ? (
-          <div className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-            {formError}
-          </div>
-        ) : null}
+      <AuthPageDescription
+        title="Sign in to your account"
+        description="Enter your email below to sign in to your account"
+        errorMessage={formError}
+      >
         <form.Field name="email">
           {field => {
             const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
@@ -152,40 +147,7 @@ export function SigninForm({ className, ...props }: React.ComponentProps<'form'>
             </Link>
           </FieldDescription>
         </Field>
-      </FieldGroup>
+      </AuthPageDescription>
     </form>
-  );
-}
-
-function PasskeySigninButton() {
-  const router = useRouter();
-
-  useEffect(() => {
-    // TODO: This is automatic way is not working
-    if (
-      !PublicKeyCredential.isConditionalMediationAvailable ||
-      !PublicKeyCredential.isConditionalMediationAvailable()
-    ) {
-      return;
-    }
-
-    void authClient.signIn.passkey({ autoFill: true });
-  }, []);
-
-  return (
-    <Button
-      type="button"
-      variant="outline"
-      onClick={() => {
-        authClient.signIn.passkey(undefined, {
-          onSuccess: () => {
-            router.push('/admin');
-          },
-        });
-      }}
-    >
-      <Fingerprint />
-      Passkey (Browser)
-    </Button>
   );
 }

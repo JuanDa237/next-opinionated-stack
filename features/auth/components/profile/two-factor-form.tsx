@@ -100,6 +100,7 @@ export function TwoFactorForm({ isEnabled }: { isEnabled: boolean }) {
             form.handleSubmit();
           }}
         >
+          {/* Chrome autofill */}
           <input
             className="sr-only"
             type="text"

@@ -1,16 +1,18 @@
 'use client';
 
+import { useState } from 'react';
+
 import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
 
 import { cn } from '@/lib/utils';
 
-import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 
 import { authClient } from '@/lib/auth/auth-client';
 import { CountdownSubmitButton } from '@/components/common/countdown-submit-button';
-import { useState } from 'react';
+import { AuthPageDescription } from '../components/auth-page-description';
 
 const formSchema = z.object({
   email: z.email('Enter a valid email.').min(1, 'Email is required.'),
@@ -39,6 +41,7 @@ export function ForgotPasswordForm({ className, ...props }: React.ComponentProps
 
       setFormError(null);
       setFormSuccess(null);
+
       await authClient.requestPasswordReset(
         {
           email: value.email,
@@ -71,23 +74,13 @@ export function ForgotPasswordForm({ className, ...props }: React.ComponentProps
       }}
       {...props}
     >
-      <FieldGroup>
-        <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-2xl font-bold">Reset your password</h1>
-          <p className="text-muted-foreground text-sm text-balance">
-            Enter your email below to reset your password
-          </p>
-        </div>
-        {formSuccess ? (
-          <div className="rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-700">
-            {formSuccess}
-          </div>
-        ) : null}
-        {formError ? (
-          <div className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-            {formError}
-          </div>
-        ) : null}
+      <AuthPageDescription
+        title="Reset your password"
+        description="Enter your email below to reset your password"
+        successTitle="Email Sent"
+        errorMessage={formError}
+        successMessage={formSuccess}
+      >
         <form.Field name="email">
           {field => {
             const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
@@ -103,6 +96,7 @@ export function ForgotPasswordForm({ className, ...props }: React.ComponentProps
                   onBlur={field.handleBlur}
                   onChange={event => field.handleChange(event.target.value)}
                   aria-invalid={isInvalid}
+                  autoComplete="email"
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
@@ -117,7 +111,7 @@ export function ForgotPasswordForm({ className, ...props }: React.ComponentProps
             onCooldownChange={setCooldownActive}
           />
         </Field>
-      </FieldGroup>
+      </AuthPageDescription>
     </form>
   );
 }
