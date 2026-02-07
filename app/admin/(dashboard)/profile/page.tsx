@@ -23,7 +23,7 @@ export default function Page() {
         </div>
 
         <div className="mt-10 grid gap-8 lg:grid-cols-[240px_1fr]">
-          <aside className="sticky top-6 h-fit max-h-[calc(100vh-4rem)] overflow-auto rounded-2xl border bg-background/80 p-4 backdrop-blur">
+          <aside className="h-fit rounded-2xl border bg-background/80 p-4 backdrop-blur lg:sticky lg:top-6 lg:max-h-[calc(100vh-4rem)] lg:overflow-auto">
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
               Settings
             </p>
