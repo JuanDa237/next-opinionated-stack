@@ -22,6 +22,22 @@ export const auth = betterAuth({
             console.log(`Send verification email to ${user.email} with url: ${url}`);
         }
     },
+    user: {
+        changeEmail: {
+            enabled: true,
+            sendChangeEmailConfirmation: async ({ user, url, newEmail }) => {
+                // TODO: Integrate with your email provider to send the change email email
+                console.log(`Send change email email to ${user.email} with url: ${url} and new email: ${newEmail}.`);
+            }
+        },
+        deleteUser: {
+            enabled: true,
+            sendDeleteAccountVerification: async ({ user, url }) => {
+                // TODO: Integrate with your email provider to send the reset password email
+                console.log(`Send delete account email to ${user.email} with url: ${url}.`);
+            }
+        },
+    },
     session: {
         cookieCache: {
             enabled: true,

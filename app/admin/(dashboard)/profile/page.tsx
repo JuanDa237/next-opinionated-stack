@@ -1,6 +1,5 @@
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { AccountsSection } from '@/features/auth/components/profile/accounts';
+import { DangerZone } from '@/features/auth/components/profile/danger-zone';
 import { ProfileSection } from '@/features/auth/components/profile/profile';
 import { SecuritySection } from '@/features/auth/components/profile/security';
 import { SessionsSection } from '@/features/auth/components/profile/sessions';
@@ -55,25 +54,7 @@ export default function Page() {
               <AccountsSection />
             </section>
 
-            <section
-              id="danger-zone"
-              className="rounded-2xl border border-destructive/40 bg-destructive/5 p-6 shadow-sm"
-            >
-              <h2 className="text-xl font-semibold text-destructive">Danger zone</h2>
-              <p className="text-sm text-muted-foreground">
-                These actions are irreversible. Proceed with caution.
-              </p>
-              <Separator className="my-6" />
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <div>
-                  <p className="text-sm font-medium">Delete this account</p>
-                  <p className="text-xs text-muted-foreground">
-                    Permanently remove your data and revoke all access.
-                  </p>
-                </div>
-                <Button variant="destructive">Delete account</Button>
-              </div>
-            </section>
+            <DangerZone />
           </div>
         </div>
       </div>
