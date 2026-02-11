@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { auth } from '@/lib/auth';
 
 // Sections
-import { ChangePasswordForm } from './change-password-form';
+import { ChangePasswordForm } from './security/password/change-password-form';
 import { SetPassword } from './security/password/set-password';
 import { TwoFactorDialogWrapper } from './security/two-factor/two-factor-dialog-wrapper';
 import { Passkey } from './security/passkey/passkey';
