@@ -9,7 +9,9 @@ import { passkey } from "@better-auth/passkey"
 
 export const auth = betterAuth({
     appName: "Next Opinionated Stack",
-    baseURL: process.env.BETTER_AUTH_URL,
+    baseURL:
+        process.env.BETTER_AUTH_URL ||
+        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'),
     database: drizzleAdapter(db, {
         provider: "pg",
     }),
