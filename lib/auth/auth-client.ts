@@ -1,6 +1,10 @@
-import { twoFactorClient } from "better-auth/plugins/two-factor"
 import { createAuthClient } from "better-auth/react"
+
+// Plugins
+import { twoFactorClient } from "better-auth/plugins/two-factor"
 import { passkeyClient } from "@better-auth/passkey/client"
+import { adminClient, organizationClient } from "better-auth/client/plugins"
+import { adminAccessControl, adminRoles } from "@/lib/auth/permissions"
 
 export const authClient = createAuthClient({
     baseURL: process.env.BETTER_AUTH_URL,
@@ -10,6 +14,11 @@ export const authClient = createAuthClient({
                 window.location.href = '/admin/2fa';
             }
         }),
-        passkeyClient()
+        passkeyClient(),
+        adminClient({
+            ac: adminAccessControl,
+            roles: adminRoles,
+        }),
+        organizationClient()
     ],
 })

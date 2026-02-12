@@ -1,11 +1,19 @@
 import { betterAuth } from "better-auth";
+
+// DB
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/lib/db/drizzle";
+
+// Plugins
 import { nextCookies } from "better-auth/next-js";
-import { createAuthMiddleware } from "better-auth/api";
 import { twoFactor } from "better-auth/plugins/two-factor";
 import { passkey } from "@better-auth/passkey"
+import { admin } from "better-auth/plugins/admin";
+import { organization } from "better-auth/plugins";
+import { adminAccessControl, adminRoles } from "@/lib/auth/permissions";
 
+// Hooks
+import { createAuthMiddleware } from "better-auth/api";
 
 export const auth = betterAuth({
     appName: "Next Opinionated Stack",
@@ -81,6 +89,18 @@ export const auth = betterAuth({
             }
         })
     },
+    databaseHooks: {
+        user: {
+            create: {
+                before: async (user, _context) => ({
+                    data: {
+                        ...user,
+                        role: user.role ?? "user",
+                    }
+                }),
+            },
+        },
+    },
     plugins: [
         nextCookies(),
         twoFactor({
@@ -90,5 +110,10 @@ export const auth = betterAuth({
             }
         }),
         passkey(),
+        admin({
+            ac: adminAccessControl,
+            roles: adminRoles,
+        }),
+        organization()
     ],
 });

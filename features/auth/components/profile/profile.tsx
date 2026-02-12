@@ -13,24 +13,16 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 // Libs
 import { authClient } from '@/lib/auth/auth-client';
+import { UserAvatar } from '@/components/common/user-avatar';
 
 export function ProfileSection() {
   const { data } = authClient.useSession();
 
   const name = data?.user.name || '';
   const email = data?.user.email || '';
-
-  const avatarImage = data?.user.image || '';
-  const avatarFallback =
-    name
-      .split(' ')
-      .map(name => name[0])
-      .join('')
-      .toUpperCase() ?? 'JD';
 
   // TODO: This form should save changes.
 
@@ -47,10 +39,7 @@ export function ProfileSection() {
       </CardHeader>
       <CardContent>
         <div className="flex flex-wrap items-center gap-4 rounded-2xl border border-dashed px-4 py-3">
-          <Avatar>
-            <AvatarImage src={avatarImage} alt={name} className="grayscale" />
-            <AvatarFallback>{avatarFallback}</AvatarFallback>
-          </Avatar>
+          <UserAvatar name={name} image={data?.user.image ?? ''} />
           <div>
             <p className="text-sm font-semibold">{name}</p>
             <p className="text-xs text-muted-foreground">{email}</p>

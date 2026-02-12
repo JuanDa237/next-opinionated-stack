@@ -27,6 +27,11 @@ const data = {
           url: '/admin/profile',
           isActive: true,
         },
+        {
+          title: 'Users',
+          url: '/admin/users',
+          isActive: false,
+        },
       ],
     },
   ],
