@@ -1,8 +1,10 @@
 import { betterAuth } from "better-auth";
 
 // DB
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/lib/db/drizzle";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { desc, eq } from "drizzle-orm";
+import { member } from "../db/schema";
 
 // Plugins
 import { nextCookies } from "better-auth/next-js";
@@ -100,6 +102,25 @@ export const auth = betterAuth({
                 }),
             },
         },
+        session: {
+            create: {
+                before: async userSession => {
+                    // Set activeOrganizationId in session based on the most recent organization membership of the user
+                    const membership = await db.query.member.findFirst({
+                        where: eq(member.userId, userSession.userId),
+                        orderBy: desc(member.createdAt),
+                        columns: { organizationId: true }
+                    });
+
+                    return {
+                        data: {
+                            ...userSession,
+                            activeOrganizationId: membership?.organizationId,
+                        }
+                    }
+                },
+            }
+        }
     },
     plugins: [
         nextCookies(),
@@ -114,6 +135,11 @@ export const auth = betterAuth({
             ac: adminAccessControl,
             roles: adminRoles,
         }),
-        organization()
+        organization({
+            sendInvitationEmail: async ({ email, organization, inviter, invitation }) => {
+                // TODO: Integrate with your email provider to send the invitation email
+                console.log(`${inviter.user.name} sended organization (${organization.name}) invitation email to ${email} with url: ${process.env.BETTER_AUTH_URL}/admin/organizations/invites/${invitation.id}.`);
+            }
+        })
     ],
 });

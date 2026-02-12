@@ -32,6 +32,11 @@ const data = {
           url: '/admin/users',
           isActive: false,
         },
+        {
+          title: 'Organizations',
+          url: '/admin/organizations',
+          isActive: false,
+        },
       ],
     },
   ],

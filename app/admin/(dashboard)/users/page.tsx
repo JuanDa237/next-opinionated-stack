@@ -1,5 +1,4 @@
 import { headers } from 'next/headers';
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { auth } from '@/lib/auth';
@@ -9,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { UsersTable } from '@/features/users/components/users-table';
-import { ArrowLeft, Users } from 'lucide-react';
+import { Users } from 'lucide-react';
 
 type PageProps = {
   searchParams?: {
@@ -74,11 +73,6 @@ export default async function Page({ searchParams }: PageProps) {
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-6 px-4 py-6">
-      <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-        <ArrowLeft className="size-4" />
-        Back to Home
-      </Link>
-
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">

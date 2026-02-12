@@ -29,7 +29,7 @@ export default async function DashboardLayout({ children }: PropsWithChildren) {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset>
+      <SidebarInset className="min-h-svh">
         <DashboardHeader />
         {children}
         <ImpersonationIndicator />
