@@ -136,9 +136,19 @@ export const auth = betterAuth({
             roles: adminRoles,
         }),
         organization({
+            allowUserToCreateOrganization: async (_user) => {
+                // TODO: Implement your logic to determine if the user can create an organization
+
+                // const subscription = await getSubscription(user.id); 
+                // return subscription.plan === "pro"; 
+                return true;
+            },
             sendInvitationEmail: async ({ email, organization, inviter, invitation }) => {
                 // TODO: Integrate with your email provider to send the invitation email
                 console.log(`${inviter.user.name} sended organization (${organization.name}) invitation email to ${email} with url: ${process.env.BETTER_AUTH_URL}/admin/organizations/invites/${invitation.id}.`);
+            },
+            teams: {
+                enabled: true,
             }
         })
     ],

@@ -59,6 +59,7 @@ export function ManageUserActions({ userId, isSelf, banned }: ManageUserActionsP
     runAction(async () => {
       await authClient.admin.impersonateUser({ userId });
       router.push('/admin');
+      router.refresh();
     });
 
   const handleRevokeSessions = () =>

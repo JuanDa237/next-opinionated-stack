@@ -6,10 +6,16 @@ import { Button } from '@/components/ui/button';
 import { authClient } from '@/lib/auth/auth-client';
 import { toast } from 'sonner';
 
-export function OrganizationInvitationsList() {
+interface OrganizationInvitationsListProps {
+  teamId?: string | null;
+}
+
+export function OrganizationInvitationsList({ teamId = null }: OrganizationInvitationsListProps) {
   const { data: activeOrganization } = authClient.useActiveOrganization();
   const pendingInvites =
-    activeOrganization?.invitations?.filter(invite => invite.status === 'pending') ?? [];
+    activeOrganization?.invitations
+      ?.filter(invite => invite.status === 'pending')
+      .filter(invite => teamId === null || invite.teamId === teamId) ?? [];
 
   if (!activeOrganization) {
     return (
@@ -22,7 +28,7 @@ export function OrganizationInvitationsList() {
   if (pendingInvites.length === 0) {
     return (
       <div className="text-sm text-muted-foreground">
-        No pending invitations for this organization.
+        No pending invitations for this {teamId ? `team` : `organization`}.
       </div>
     );
   }

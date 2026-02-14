@@ -1,7 +1,6 @@
 import * as React from 'react';
 
-import { SearchForm } from './search-form';
-import { VersionSwitcher } from './version-switcher';
+import { TeamSwitcher } from './team-switcher';
 import {
   Sidebar,
   SidebarContent,
@@ -17,7 +16,6 @@ import {
 
 // This is sample data.
 const data = {
-  versions: ['1.0.1', '1.1.0-alpha', '2.0.0-beta1'],
   navMain: [
     {
       title: 'Settings',
@@ -37,6 +35,11 @@ const data = {
           url: '/admin/organizations',
           isActive: false,
         },
+        {
+          title: 'Teams',
+          url: '/admin/teams',
+          isActive: false,
+        },
       ],
     },
   ],
@@ -46,8 +49,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <VersionSwitcher versions={data.versions} defaultVersion={data.versions[0]} />
-        <SearchForm />
+        <TeamSwitcher />
       </SidebarHeader>
       <SidebarContent>
         {/* We create a SidebarGroup for each parent. */}

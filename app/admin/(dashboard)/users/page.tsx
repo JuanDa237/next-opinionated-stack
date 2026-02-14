@@ -44,7 +44,7 @@ export default async function Page({ searchParams }: PageProps) {
   });
 
   if (!permission?.success) {
-    redirect('/');
+    redirect('/admin');
   }
 
   const resolvedSearchParams = await searchParams;

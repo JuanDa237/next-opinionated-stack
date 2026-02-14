@@ -10,7 +10,6 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 // Auth
 import { auth } from '@/lib/auth';
 import { ImpersonationIndicator } from '@/features/auth/components/impersionation-indicator';
-// import { canAccessRole, getSessionRole } from '@/lib/auth/roles';
 
 export default async function DashboardLayout({ children }: PropsWithChildren) {
   const session = await auth.api.getSession({
@@ -20,11 +19,6 @@ export default async function DashboardLayout({ children }: PropsWithChildren) {
   if (!session) {
     redirect('/admin/signin');
   }
-
-  // const role = await getSessionRole(session);
-  // if (!canAccessRole('admin', role)) {
-  //   redirect('/');
-  // }
 
   return (
     <SidebarProvider>

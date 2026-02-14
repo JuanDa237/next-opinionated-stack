@@ -7,6 +7,8 @@ import { OrganizationMembersList } from '../components/organization-members-list
 import { OrganizationSelect } from '../components/organization-select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { OrganizationTeamsList } from '../components/organization-teams-list';
+import { CreateTeamButton } from '../../teams/components/create-team-button';
 
 export function OrganizationDashboard() {
   return (
@@ -24,6 +26,7 @@ export function OrganizationDashboard() {
       <Tabs defaultValue="members" className="w-full">
         <TabsList>
           <TabsTrigger value="members">Members</TabsTrigger>
+          <TabsTrigger value="teams">Teams</TabsTrigger>
           <TabsTrigger value="invitations">Invitations</TabsTrigger>
         </TabsList>
         <TabsContent value="members">
@@ -34,6 +37,20 @@ export function OrganizationDashboard() {
             </CardHeader>
             <CardContent>
               <OrganizationMembersList />
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="teams">
+          <Card>
+            <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="space-y-1.5">
+                <CardTitle>Teams</CardTitle>
+                <CardDescription>View and manage organization teams.</CardDescription>
+              </div>
+              <CreateTeamButton />
+            </CardHeader>
+            <CardContent>
+              <OrganizationTeamsList />
             </CardContent>
           </Card>
         </TabsContent>
