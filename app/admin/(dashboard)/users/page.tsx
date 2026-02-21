@@ -4,7 +4,6 @@ import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
 
 // Components
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { UsersTable } from '@/features/users/components/users-table';
@@ -73,13 +72,15 @@ export default async function Page({ searchParams }: PageProps) {
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-6 px-4 py-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
+      <div>
+        <div className="mb-4">
+          <h1 className="flex items-center gap-2 text-lg font-semibold">
             <Users className="size-5" />
             Users ({users.total ?? 0})
-          </CardTitle>
-          <CardDescription>Manage user accounts, roles, and access.</CardDescription>
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Manage user accounts, roles, and access.
+          </p>
           <form className="mt-4 flex flex-col gap-3 sm:flex-row" method="get">
             <Input
               name="q"
@@ -98,18 +99,16 @@ export default async function Page({ searchParams }: PageProps) {
               ) : null}
             </div>
           </form>
-        </CardHeader>
-        <CardContent>
-          <UsersTable
-            users={users.users ?? []}
-            total={users.total ?? 0}
-            limit={'limit' in users ? (users.limit ?? limit) : limit}
-            offset={'offset' in users ? (users.offset ?? offset) : offset}
-            selfId={session.user?.id}
-            query={{ q: queryValue }}
-          />
-        </CardContent>
-      </Card>
+        </div>
+        <UsersTable
+          users={users.users ?? []}
+          total={users.total ?? 0}
+          limit={'limit' in users ? (users.limit ?? limit) : limit}
+          offset={'offset' in users ? (users.offset ?? offset) : offset}
+          selfId={session.user?.id}
+          query={{ q: queryValue }}
+        />
+      </div>
     </div>
   );
 }

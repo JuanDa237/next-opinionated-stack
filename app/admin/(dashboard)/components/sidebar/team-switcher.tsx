@@ -38,7 +38,6 @@ export function TeamSwitcher() {
   async function handleSelectTeam(teamId: string) {
     try {
       await authClient.organization.setActiveTeam({ teamId });
-      router.push('/admin');
       router.refresh();
     } catch (error) {
       const message =
