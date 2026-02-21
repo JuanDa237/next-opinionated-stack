@@ -12,7 +12,7 @@ import { twoFactor } from "better-auth/plugins/two-factor";
 import { passkey } from "@better-auth/passkey"
 import { admin } from "better-auth/plugins/admin";
 import { organization } from "better-auth/plugins";
-import { adminAccessControl, adminRoles } from "@/lib/auth/permissions";
+import { adminAccessControl, adminRoles, organizationAccessControl, organizationRoles } from "@/lib/auth/permissions";
 
 // Hooks
 import { createAuthMiddleware } from "better-auth/api";
@@ -136,6 +136,11 @@ export const auth = betterAuth({
             roles: adminRoles,
         }),
         organization({
+            ac: organizationAccessControl,
+            roles: organizationRoles,
+            dynamicAccessControl: {
+                enabled: true,
+            },
             allowUserToCreateOrganization: async (_user) => {
                 // TODO: Implement your logic to determine if the user can create an organization
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
 
@@ -29,13 +29,15 @@ import {
 
 const createInviteSchema = z.object({
   email: z.string().trim().email().min(1),
-  role: z.enum(['member', 'admin']),
+  role: z.string().trim().min(1),
 });
 
 type CreateInviteForm = z.infer<typeof createInviteSchema>;
 
 export function InviteMemberButton() {
   const [open, setOpen] = useState(false);
+  const { data: activeOrganization } = authClient.useActiveOrganization();
+  const [roleOptions, setRoleOptions] = useState<string[]>([]);
 
   const formId = 'invite-member-form';
   const form = useForm({
@@ -52,16 +54,64 @@ export function InviteMemberButton() {
   });
 
   async function handleCreateInvite(data: CreateInviteForm) {
-    await authClient.organization.inviteMember(data, {
-      onError: error => {
-        toast.error(error.error.message || 'Failed to invite user');
+    await authClient.organization.inviteMember(
+      {
+        email: data.email,
+        role: data.role as 'member' | 'admin',
       },
-      onSuccess: () => {
-        form.reset();
-        setOpen(false);
-      },
-    });
+      {
+        onError: error => {
+          toast.error(error.error.message || 'Failed to invite user');
+        },
+        onSuccess: () => {
+          form.reset();
+          setOpen(false);
+        },
+      }
+    );
   }
+
+  useEffect(() => {
+    if (!activeOrganization?.id) {
+      return;
+    }
+
+    const loadRoles = async () => {
+      try {
+        const result = await authClient.organization.listRoles({
+          query: {
+            organizationId: activeOrganization.id,
+          },
+        });
+
+        const dynamicRoles =
+          result?.data
+            ?.map(role => role.role)
+            .filter((roleName): roleName is string => Boolean(roleName)) ?? [];
+
+        setRoleOptions(Array.from(new Set(['member', 'admin', ...dynamicRoles])));
+      } catch (error) {
+        const message =
+          error && typeof error === 'object' && 'error' in error
+            ? (error as { error?: { message?: string } }).error?.message
+            : undefined;
+        toast.error(message || 'Failed to load roles');
+        setRoleOptions(['member', 'admin']);
+      }
+    };
+
+    loadRoles();
+  }, [activeOrganization?.id]);
+
+  const roleSelectItems = useMemo(
+    () =>
+      (roleOptions.length > 0 ? roleOptions : ['member', 'admin']).map(role => (
+        <SelectItem key={role} value={role}>
+          {role.charAt(0).toUpperCase() + role.slice(1)}
+        </SelectItem>
+      )),
+    [roleOptions]
+  );
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -120,10 +170,7 @@ export function InviteMemberButton() {
                     >
                       <SelectValue placeholder="Select a role" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="member">Member</SelectItem>
-                      <SelectItem value="admin">Admin</SelectItem>
-                    </SelectContent>
+                    <SelectContent>{roleSelectItems}</SelectContent>
                   </Select>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>

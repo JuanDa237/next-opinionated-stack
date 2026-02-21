@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { OrganizationTeamsList } from '../components/organization-teams-list';
 import { CreateTeamButton } from '../../teams/components/create-team-button';
+import { OrganizationRolesList } from '../components/organization-roles-list';
 
 export function OrganizationDashboard() {
   return (
@@ -28,6 +29,7 @@ export function OrganizationDashboard() {
           <TabsTrigger value="members">Members</TabsTrigger>
           <TabsTrigger value="teams">Teams</TabsTrigger>
           <TabsTrigger value="invitations">Invitations</TabsTrigger>
+          <TabsTrigger value="roles">Roles</TabsTrigger>
         </TabsList>
         <TabsContent value="members">
           <Card>
@@ -65,6 +67,17 @@ export function OrganizationDashboard() {
             </CardHeader>
             <CardContent>
               <OrganizationInvitationsList />
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="roles">
+          <Card>
+            <CardHeader>
+              <CardTitle>Roles</CardTitle>
+              <CardDescription>Manage custom roles and permissions.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <OrganizationRolesList />
             </CardContent>
           </Card>
         </TabsContent>

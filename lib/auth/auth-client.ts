@@ -4,7 +4,7 @@ import { createAuthClient } from "better-auth/react"
 import { twoFactorClient } from "better-auth/plugins/two-factor"
 import { passkeyClient } from "@better-auth/passkey/client"
 import { adminClient, organizationClient } from "better-auth/client/plugins"
-import { adminAccessControl, adminRoles } from "@/lib/auth/permissions"
+import { adminAccessControl, adminRoles, organizationAccessControl } from "@/lib/auth/permissions"
 
 export const authClient = createAuthClient({
     baseURL: process.env.BETTER_AUTH_URL,
@@ -20,6 +20,10 @@ export const authClient = createAuthClient({
             roles: adminRoles,
         }),
         organizationClient({
+            ac: organizationAccessControl,
+            dynamicAccessControl: {
+                enabled: true,
+            },
             teams: {
                 enabled: true,
             }
