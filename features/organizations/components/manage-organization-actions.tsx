@@ -1,14 +1,14 @@
 import { MoreHorizontal } from 'lucide-react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { authClient } from '@/lib/auth/auth-client';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
@@ -21,27 +21,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 
-export type UsersTableRow = {
-  id: string;
-  name?: string | null;
-  email?: string | null;
-  role?: string | null;
-  createdAt?: string | Date | null;
-  banned?: boolean | null;
+type ManageOrganizationActionsProps = {
+  organizationId: string;
 };
 
-type ManageUserActionsProps = {
-  userId: string;
-  isSelf: boolean;
-  banned: boolean;
-};
-
-export function ManageUserActions({ userId, isSelf, banned }: ManageUserActionsProps) {
-  const { refetch } = authClient.useSession();
-
+export function ManageOrganizationActions({ organizationId }: ManageOrganizationActionsProps) {
   const router = useRouter();
 
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -57,38 +42,13 @@ export function ManageUserActions({ userId, isSelf, banned }: ManageUserActionsP
     }
   };
 
-  const handleImpersonate = () =>
-    runAction(async () => {
-      await authClient.admin.impersonateUser({ userId });
-      router.push('/admin');
-      refetch();
-      router.refresh();
-    });
-
-  const handleRevokeSessions = () =>
-    runAction(() => authClient.admin.revokeUserSessions({ userId }));
-
-  const handleBanToggle = () =>
-    runAction(() =>
-      banned ? authClient.admin.unbanUser({ userId }) : authClient.admin.banUser({ userId })
-    );
-
   const handleDelete = () =>
     runAction(async () => {
-      await authClient.admin.removeUser({ userId });
+      await authClient.organization.delete({
+        organizationId,
+      });
       setIsDeleteOpen(false);
     });
-
-  if (isSelf) {
-    return (
-      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-        <Badge variant="secondary" className="px-2 py-0.5 text-[11px]">
-          You
-        </Badge>
-        <span>Signed-in user</span>
-      </div>
-    );
-  }
 
   return (
     <>
@@ -101,16 +61,6 @@ export function ManageUserActions({ userId, isSelf, banned }: ManageUserActionsP
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem onSelect={handleImpersonate} disabled={isBusy}>
-            Impersonate
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={handleRevokeSessions} disabled={isBusy}>
-            Revoke sessions
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={handleBanToggle} disabled={isBusy}>
-            {banned ? 'Unban user' : 'Ban user'}
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
           <DropdownMenuItem
             onSelect={event => {
               event.preventDefault();
@@ -119,7 +69,7 @@ export function ManageUserActions({ userId, isSelf, banned }: ManageUserActionsP
             disabled={isBusy}
             className="text-destructive focus:text-destructive"
           >
-            Delete user
+            Delete organization
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -127,9 +77,10 @@ export function ManageUserActions({ userId, isSelf, banned }: ManageUserActionsP
       <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete user?</AlertDialogTitle>
+            <AlertDialogTitle>Delete organization?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action permanently removes the user and all related data. This cannot be undone.
+              This action permanently removes the organization and all related data. This cannot be
+              undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

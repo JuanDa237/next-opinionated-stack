@@ -19,18 +19,23 @@ import { useTeamsStore } from '@/features/teams/stores/teams';
 export function TeamSwitcher() {
   const { data: session } = authClient.useSession();
 
-  const teams = useTeamsStore(state => state.userTeams);
-  const isLoading = useTeamsStore(state => state.isLoadingUserTeams);
+  const teams = useTeamsStore(state => state.organizationTeams);
+  const isLoading = useTeamsStore(state => state.isLoadingOrganizationTeams);
   const error = useTeamsStore(state => state.error);
-  const fetchUserTeams = useTeamsStore(state => state.fetchUserTeams);
+  const fetchOrganizationTeams = useTeamsStore(state => state.fetchOrganizationTeams);
 
   const selectedTeamId = session?.session.activeTeamId ?? null;
+  const activeOrganizationId = session?.session.activeOrganizationId ?? null;
 
   const router = useRouter();
 
   useEffect(() => {
-    fetchUserTeams();
-  }, [fetchUserTeams]);
+    if (!activeOrganizationId) {
+      return;
+    }
+
+    fetchOrganizationTeams(activeOrganizationId);
+  }, [activeOrganizationId, fetchOrganizationTeams]);
 
   const selectedTeam = teams.find(team => team.id === selectedTeamId) ?? null;
   const selectedLabel = selectedTeam?.name || selectedTeam?.id || 'Select team';
@@ -70,7 +75,10 @@ export function TeamSwitcher() {
           <DropdownMenuContent className="w-(--radix-dropdown-menu-trigger-width)" align="start">
             {isLoading && <DropdownMenuItem disabled>Loading teams...</DropdownMenuItem>}
             {!isLoading && error && <DropdownMenuItem disabled>{error}</DropdownMenuItem>}
-            {!isLoading && !error && teams.length === 0 && (
+            {!isLoading && !error && !activeOrganizationId && (
+              <DropdownMenuItem disabled>Select an organization</DropdownMenuItem>
+            )}
+            {!isLoading && !error && activeOrganizationId && teams.length === 0 && (
               <DropdownMenuItem disabled>No teams available</DropdownMenuItem>
             )}
             {!isLoading &&

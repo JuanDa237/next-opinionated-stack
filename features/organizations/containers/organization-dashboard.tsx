@@ -10,8 +10,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { OrganizationTeamsList } from '../components/organization-teams-list';
 import { CreateTeamButton } from '../../teams/components/create-team-button';
 import { OrganizationRolesList } from '../components/organization-roles-list';
+import { authClient } from '@/lib/auth/auth-client';
 
 export function OrganizationDashboard() {
+  const { data: session } = authClient.useSession();
+
   return (
     <div className="grid gap-8 lg:grid-cols-[240px_1fr]">
       <div className="space-y-6">
@@ -21,7 +24,7 @@ export function OrganizationDashboard() {
           </p>
           <OrganizationSelect />
         </div>
-        <CreateOrganizationButton />
+        {session?.user.role === 'admin' && <CreateOrganizationButton />}
       </div>
 
       <Tabs defaultValue="members" className="w-full">

@@ -19,32 +19,45 @@ import {
 } from '@/components/ui/dialog';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import { RotateCcw } from 'lucide-react';
+import { ButtonGroup } from '@/components/ui/button-group';
+import { useRouter } from 'next/navigation';
 
 const createOrganizationSchema = z.object({
-  name: z.string().min(1),
+  name: z.string().min(1, 'Organization name is required'),
+  slug: z
+    .string()
+    .min(1, 'Slug is required')
+    .min(3, 'Slug must be at least 3 characters')
+    .regex(
+      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      'Slug can only contain lowercase letters, numbers, and hyphens'
+    ),
 });
 
 type CreateOrganizationForm = z.infer<typeof createOrganizationSchema>;
 
-export function CreateOrganizationButton() {
+export function CreateOrganizationButton({ className }: { className?: string }) {
   const [open, setOpen] = useState(false);
+  const [isSlugManuallyEdited, setIsSlugManuallyEdited] = useState(false);
+
+  const [suggestedSlug, setSuggestedSlug] = useState('');
+
+  const router = useRouter();
 
   const formId = 'create-organization-form';
   const form = useForm({
     defaultValues: {
       name: '',
+      slug: '',
     } as CreateOrganizationForm,
     validators: {
       onSubmit: createOrganizationSchema,
     },
     onSubmit: async ({ value }) => {
-      const slug = value.name
-        .trim()
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-');
       const res = await authClient.organization.create({
         name: value.name,
-        slug,
+        slug: value.slug,
       });
 
       if (res.error) {
@@ -54,14 +67,44 @@ export function CreateOrganizationButton() {
 
       form.reset();
       setOpen(false);
-      await authClient.organization.setActive({ organizationId: res.data.id });
+      setIsSlugManuallyEdited(false);
+      toast.success('Organization created successfully');
+      router.refresh();
     },
   });
 
+  const handleNameChange = (name: string) => {
+    form.setFieldValue('name', name);
+
+    // Auto-generate slug from name only if user hasn't manually edited it
+    const suggestedSlug = name
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    setSuggestedSlug(suggestedSlug);
+
+    if (!isSlugManuallyEdited) {
+      form.setFieldValue('slug', suggestedSlug);
+    }
+  };
+
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+    if (!newOpen) {
+      setIsSlugManuallyEdited(false);
+    }
+  };
+
+  const handleSlugReset = () => {
+    form.setFieldValue('slug', suggestedSlug);
+    setIsSlugManuallyEdited(false);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button>Create Organization</Button>
+        <Button className={className}>Create Organization</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -84,14 +127,14 @@ export function CreateOrganizationButton() {
               const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Name</FieldLabel>
+                  <FieldLabel htmlFor={field.name}>Organization Name</FieldLabel>
                   <Input
                     id={field.name}
                     name={field.name}
                     placeholder="Acme Inc"
                     value={field.state.value}
                     onBlur={field.handleBlur}
-                    onChange={event => field.handleChange(event.target.value)}
+                    onChange={event => handleNameChange(event.target.value)}
                     aria-invalid={isInvalid}
                   />
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -99,6 +142,39 @@ export function CreateOrganizationButton() {
               );
             }}
           </form.Field>
+
+          <form.Field name="slug">
+            {field => {
+              const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>Subdomain Slug</FieldLabel>
+                  <ButtonGroup>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      placeholder={suggestedSlug || 'acme-inc'}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={event => {
+                        setIsSlugManuallyEdited(true);
+                        field.handleChange(event.target.value);
+                      }}
+                      aria-invalid={isInvalid}
+                    />
+                    <Button variant="outline" type="button" onClick={() => handleSlugReset()}>
+                      <RotateCcw />
+                    </Button>
+                  </ButtonGroup>
+                  <p className="text-xs text-muted-foreground">
+                    Used for your organization&apos;s subdomain and cannot be changed later.
+                  </p>
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          </form.Field>
+
           <DialogFooter className="flex flex-row">
             <Button
               type="button"

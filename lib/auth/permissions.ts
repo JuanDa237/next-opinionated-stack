@@ -4,6 +4,7 @@ import { defaultStatements as organizationDefaultStatements, adminAc as orgAdmin
 
 // Define your organization-specific statements
 const entityStatements = {
+    organizations: ["list"],
     reference: ["create", "read", "update", "delete"],
     warehouse: ["create", "read", "update", "delete"],
     vendor: ["create", "read", "update", "delete"],
@@ -45,17 +46,17 @@ export const adminAccessControl = createAccessControl({
     // projects: ["list", "create", "update", "delete"],
 });
 
-export const admin = adminAccessControl.newRole(adminAc.statements)
-export const user = adminAccessControl.newRole(userAc.statements)
-
-export const tics = adminAccessControl.newRole({
+export const admin = adminAccessControl.newRole({
     ...adminAc.statements,
-    // EXAMPLE Here you can define your custom statements for the tics role.
+    organizations: entityStatements.organizations
+})
+export const user = adminAccessControl.newRole({
+    ...userAc.statements,
+    // EXAMPLE Here you can define your custom statements for the user role.
     // projects: ["list", "create", "update", "delete"],
 })
 
 export const adminRoles = {
     admin,
-    user,
-    tics,
+    user
 }

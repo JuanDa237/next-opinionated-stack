@@ -10,14 +10,19 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 // Auth
 import { auth } from '@/lib/auth';
 import { ImpersonationIndicator } from '@/features/auth/components/impersionation-indicator';
+import { getSafeCallbackURL } from '@/features/auth/utils';
 
 export default async function DashboardLayout({ children }: PropsWithChildren) {
+  const requestHeaders = await headers();
   const session = await auth.api.getSession({
-    headers: await headers(),
+    headers: requestHeaders,
   });
 
   if (!session) {
-    redirect('/admin/signin');
+    // Get the pathname from the proxy.ts
+    const currentPath = requestHeaders.get('x-pathname') ?? '/admin';
+    const callbackURL = getSafeCallbackURL(currentPath);
+    redirect(`/admin/signin?callbackURL=${encodeURIComponent(callbackURL)}`);
   }
 
   return (

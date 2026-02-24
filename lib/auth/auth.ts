@@ -141,7 +141,7 @@ export const auth = betterAuth({
             dynamicAccessControl: {
                 enabled: true,
             },
-            allowUserToCreateOrganization: async (_user) => {
+            allowUserToCreateOrganization: async (user) => {
                 // TODO: Implement your logic to determine if the user can create an organization
 
                 // const subscription = await getSubscription(user.id); 
@@ -154,6 +154,10 @@ export const auth = betterAuth({
             },
             teams: {
                 enabled: true,
+                allowRemovingAllTeams: true,
+                defaultTeam: {
+                    enabled: false,
+                }
             }
         })
     ],

@@ -25,15 +25,21 @@ import { SocialAuthButtons } from '../components/social-auth-buttons';
 import { PasswordInput } from '@/components/common/password-input';
 import { AuthPageDescription } from '../components/auth-page-description';
 import { PasskeySigninButton } from '../components/signin/passkey-signin-button';
+import { getSafeCallbackURL } from '../utils';
 
 const formSchema = z.object({
   email: z.email('Enter a valid email.').min(1, 'Email is required.'),
   password: z.string().min(1, 'Password is required.'),
 });
 
-export function SigninForm({ className, ...props }: React.ComponentProps<'form'>) {
+type SigninFormProps = React.ComponentProps<'form'> & {
+  callbackURL?: string;
+};
+
+export function SigninForm({ className, callbackURL, ...props }: SigninFormProps) {
   const router = useRouter();
   const [formError, setFormError] = useState<string | null>(null);
+  const safeCallbackURL = getSafeCallbackURL(callbackURL);
 
   const formId = 'signin-form';
 
@@ -46,19 +52,18 @@ export function SigninForm({ className, ...props }: React.ComponentProps<'form'>
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      setFormError(null);
       await authClient.signIn.email(
         {
           email: value.email,
           password: value.password,
-          callbackURL: '/admin',
+          callbackURL: safeCallbackURL,
         },
         {
           onError: error => {
             setFormError(error?.error?.message ?? 'We could not sign you in. Please try again.');
           },
           onSuccess: () => {
-            router.push('/admin');
+            router.push(safeCallbackURL);
           },
         }
       );
@@ -138,8 +143,8 @@ export function SigninForm({ className, ...props }: React.ComponentProps<'form'>
         </Field>
         <FieldSeparator>Or continue with</FieldSeparator>
         <Field>
-          <SocialAuthButtons />
-          <PasskeySigninButton />
+          <SocialAuthButtons callbackURL={safeCallbackURL} />
+          <PasskeySigninButton callbackURL={safeCallbackURL} />
           <FieldDescription className="text-center">
             Don&apos;t have an account?{' '}
             <Link href="/admin/signup" className="underline underline-offset-4">

@@ -6,8 +6,15 @@ import {
   SUPPORTED_OAUTH_PROVIDER_DETAILS,
   SUPPORTED_OAUTH_PROVIDERS,
 } from '@/lib/auth/o-auth-providers';
+import { getSafeCallbackURL } from '../utils';
 
-export function SocialAuthButtons() {
+type SocialAuthButtonsProps = {
+  callbackURL?: string;
+};
+
+export function SocialAuthButtons({ callbackURL }: SocialAuthButtonsProps) {
+  const safeCallbackURL = getSafeCallbackURL(callbackURL);
+
   return SUPPORTED_OAUTH_PROVIDERS.map(provider => {
     const IconComponent = SUPPORTED_OAUTH_PROVIDER_DETAILS[provider].Icon;
 
@@ -19,7 +26,7 @@ export function SocialAuthButtons() {
         onClick={() => {
           return authClient.signIn.social({
             provider,
-            callbackURL: '/admin',
+            callbackURL: safeCallbackURL,
           });
         }}
       >

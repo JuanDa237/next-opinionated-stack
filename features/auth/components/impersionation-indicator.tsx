@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { authClient } from '@/lib/auth/auth-client';
 import { UserX } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -8,6 +9,11 @@ import { Button } from '@/components/ui/button';
 export function ImpersonationIndicator() {
   const router = useRouter();
   const { data, refetch } = authClient.useSession();
+
+  // Refetch session on mount to ensure fresh impersonation state
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   if (data?.session.impersonatedBy == null) return null;
 

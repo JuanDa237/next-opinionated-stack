@@ -40,9 +40,8 @@ export function OrganizationMembersList() {
   return (
     <div className="space-y-3">
       {members.map(member => {
-        const memberId = member.userId ?? member.id ?? member.user?.email;
-        const memberLabel =
-          member.user?.name ?? member.user?.email ?? member.id ?? member.userId ?? 'Member';
+        const memberId = member.id;
+        const memberLabel = member.user?.name ?? member.user?.email ?? 'Member';
         const memberRole = member.role ?? 'member';
 
         return (
@@ -66,7 +65,7 @@ export function OrganizationMembersList() {
               variant="outline"
               size="sm"
               onClick={() => memberId && removeMember(memberId)}
-              disabled={!memberId || memberId === session?.user?.id || member.role === 'owner'}
+              disabled={!memberId || member.userId === session?.user?.id || member.role === 'owner'}
             >
               Remove
             </Button>

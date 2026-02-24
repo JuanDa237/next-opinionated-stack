@@ -15,10 +15,6 @@ export function OrganizationSelect() {
   const { data: activeOrganization } = authClient.useActiveOrganization();
   const { data: organizations } = authClient.useListOrganizations();
 
-  if (organizations == null || organizations.length === 0) {
-    return null;
-  }
-
   function setActiveOrganization(organization: { id: string; name: string } | null) {
     if (!organization) {
       return;
@@ -34,11 +30,11 @@ export function OrganizationSelect() {
   }
 
   const selectedOrganization =
-    organizations.find(organization => organization.id === activeOrganization?.id) ?? null;
+    organizations?.find(organization => organization.id === activeOrganization?.id) ?? null;
 
   return (
     <Combobox
-      items={organizations}
+      items={organizations ?? []}
       value={selectedOrganization}
       onValueChange={setActiveOrganization}
       itemToStringLabel={organization => organization.name}

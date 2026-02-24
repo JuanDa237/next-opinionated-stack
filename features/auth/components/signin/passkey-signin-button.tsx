@@ -7,24 +7,29 @@ import { Button } from '@/components/ui/button';
 import { Fingerprint } from 'lucide-react';
 
 import { authClient } from '@/lib/auth/auth-client';
+import { getSafeCallbackURL } from '../../utils';
 
-export function PasskeySigninButton() {
+type PasskeySigninButtonProps = {
+  callbackURL?: string;
+};
+
+export function PasskeySigninButton({ callbackURL }: PasskeySigninButtonProps) {
   const router = useRouter();
+  const safeCallbackURL = getSafeCallbackURL(callbackURL);
 
   useEffect(() => {
     // TODO: This is automatic way is not working
-    if (
-      !PublicKeyCredential.isConditionalMediationAvailable ||
-      !PublicKeyCredential.isConditionalMediationAvailable()
-    ) {
-      return;
-    }
-
-    try {
-      authClient.signIn.passkey({ autoFill: true });
-    } catch (error) {
-      console.warn('Error during automatic passkey sign-in:', error);
-    }
+    // if (
+    //   !PublicKeyCredential.isConditionalMediationAvailable ||
+    //   !PublicKeyCredential.isConditionalMediationAvailable()
+    // ) {
+    //   return;
+    // }
+    // try {
+    //   authClient.signIn.passkey({ autoFill: true });
+    // } catch (error) {
+    //   console.warn('Error during automatic passkey sign-in:', error);
+    // }
   }, []);
 
   return (
@@ -34,7 +39,7 @@ export function PasskeySigninButton() {
       onClick={() => {
         authClient.signIn.passkey(undefined, {
           onSuccess: () => {
-            router.push('/admin');
+            router.push(safeCallbackURL);
           },
         });
       }}
