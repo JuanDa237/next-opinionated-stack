@@ -6,6 +6,7 @@ import { authClient } from '@/lib/auth/auth-client';
 import { toast } from 'sonner';
 import {
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuSub,
@@ -83,6 +84,7 @@ export function OrganizationsMenu({ disabled }: OrganizationsMenuProps) {
   return (
     <>
       <DropdownMenuSeparator />
+      <DropdownMenuLabel>Organizations</DropdownMenuLabel>
       {organizations.map(organization => (
         <DropdownMenuItem
           key={organization.id}

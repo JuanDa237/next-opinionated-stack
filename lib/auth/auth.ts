@@ -3,8 +3,6 @@ import { betterAuth } from "better-auth";
 // DB
 import { db } from "@/lib/db/drizzle";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { desc, eq } from "drizzle-orm";
-import { member } from "../db/schema";
 
 // Plugins
 import { nextCookies } from "better-auth/next-js";
@@ -104,21 +102,22 @@ export const auth = betterAuth({
         },
         session: {
             create: {
-                before: async userSession => {
-                    // Set activeOrganizationId in session based on the most recent organization membership of the user
-                    const membership = await db.query.member.findFirst({
-                        where: eq(member.userId, userSession.userId),
-                        orderBy: desc(member.createdAt),
-                        columns: { organizationId: true }
-                    });
+                // TODO: You can set activeOrganizationId in session based on anything you want.
+                // before: async userSession => {
+                //     // Set activeOrganizationId in session based on the most recent organization membership of the user
+                //     const membership = await db.query.member.findFirst({
+                //         where: eq(member.userId, userSession.userId),
+                //         orderBy: desc(member.createdAt),
+                //         columns: { organizationId: true }
+                //     });
 
-                    return {
-                        data: {
-                            ...userSession,
-                            activeOrganizationId: membership?.organizationId,
-                        }
-                    }
-                },
+                //     return {
+                //         data: {
+                //             ...userSession,
+                //             activeOrganizationId: membership?.organizationId,
+                //         }
+                //     }
+                // },
             }
         }
     },
@@ -141,7 +140,7 @@ export const auth = betterAuth({
             dynamicAccessControl: {
                 enabled: true,
             },
-            allowUserToCreateOrganization: async (user) => {
+            allowUserToCreateOrganization: async (_user) => {
                 // TODO: Implement your logic to determine if the user can create an organization
 
                 // const subscription = await getSubscription(user.id); 

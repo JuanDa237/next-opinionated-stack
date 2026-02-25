@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 // Libs
@@ -37,9 +36,12 @@ type SigninFormProps = React.ComponentProps<'form'> & {
 };
 
 export function SigninForm({ className, callbackURL, ...props }: SigninFormProps) {
-  const router = useRouter();
   const [formError, setFormError] = useState<string | null>(null);
-  const safeCallbackURL = getSafeCallbackURL(callbackURL);
+
+  const safeCallbackURL = callbackURL ? getSafeCallbackURL(callbackURL) : '';
+  const redirectUrl = safeCallbackURL
+    ? `/admin/select-organization?callbackURL=${encodeURIComponent(safeCallbackURL)}`
+    : '/admin/select-organization';
 
   const formId = 'signin-form';
 
@@ -56,14 +58,11 @@ export function SigninForm({ className, callbackURL, ...props }: SigninFormProps
         {
           email: value.email,
           password: value.password,
-          callbackURL: safeCallbackURL,
+          callbackURL: redirectUrl || undefined,
         },
         {
           onError: error => {
             setFormError(error?.error?.message ?? 'We could not sign you in. Please try again.');
-          },
-          onSuccess: () => {
-            router.push(safeCallbackURL);
           },
         }
       );

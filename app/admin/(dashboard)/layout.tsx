@@ -25,6 +25,17 @@ export default async function DashboardLayout({ children }: PropsWithChildren) {
     redirect(`/admin/signin?callbackURL=${encodeURIComponent(callbackURL)}`);
   }
 
+  // If user is not admin and has no active organization, redirect to org selector
+  const isAdmin = session.user?.role === 'admin';
+  const hasActiveOrg = !!session.session.activeOrganizationId;
+
+  if (!isAdmin && !hasActiveOrg) {
+    // Preserve the original destination as callbackURL
+    const currentPath = requestHeaders.get('x-pathname') ?? '/admin';
+    const callbackURL = getSafeCallbackURL(currentPath);
+    redirect(`/admin/select-organization?callbackURL=${encodeURIComponent(callbackURL)}`);
+  }
+
   return (
     <SidebarProvider>
       <AppSidebar />

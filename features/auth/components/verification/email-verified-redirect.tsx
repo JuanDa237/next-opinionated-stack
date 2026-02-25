@@ -15,7 +15,7 @@ export function EmailVerifiedRedirect({
 
   useEffect(() => {
     if (secondsLeft <= 0) {
-      router.replace('/admin');
+      router.replace('/admin/select-organization');
       return;
     }
 
