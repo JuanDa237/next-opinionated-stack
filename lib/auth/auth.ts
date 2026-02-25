@@ -80,7 +80,8 @@ export const auth = betterAuth({
     session: {
         cookieCache: {
             enabled: true,
-            maxAge: 60, // 1 minute
+            maxAge: 60,
+            domain: process.env.BETTER_AUTH_DOMAIN ?? undefined,
         }
     },
     hooks: {
