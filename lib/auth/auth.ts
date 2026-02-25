@@ -15,11 +15,20 @@ import { adminAccessControl, adminRoles, organizationAccessControl, organization
 // Hooks
 import { createAuthMiddleware } from "better-auth/api";
 
+const trustedOrigins = [
+    process.env.VERCEL_BRANCH_URL ? `https://${process.env.VERCEL_BRANCH_URL}` : undefined,
+    process.env.VERCEL_PROJECT_PRODUCTION_URL
+        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+        : undefined,
+].filter(Boolean) as string[];
+
 export const auth = betterAuth({
     appName: "Next Opinionated Stack",
     baseURL:
         process.env.BETTER_AUTH_URL ||
         (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'),
+    trustedOrigins,
+    secret: process.env.BETTER_AUTH_SECRET,
     database: drizzleAdapter(db, {
         provider: "pg",
     }),
