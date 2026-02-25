@@ -46,6 +46,12 @@ export const auth = betterAuth({
         (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'),
     trustedOrigins,
     secret: process.env.BETTER_AUTH_SECRET,
+    advanced: {
+        crossSubDomainCookies: {
+            enabled: true,
+            domain: mainDomain, // Set the cookie domain to allow sharing cookies across subdomains
+        }
+    },
     database: drizzleAdapter(db, {
         provider: "pg",
     }),
@@ -98,7 +104,6 @@ export const auth = betterAuth({
         cookieCache: {
             enabled: true,
             maxAge: 60,
-            domain: process.env.BETTER_AUTH_DOMAIN ? `.${process.env.BETTER_AUTH_DOMAIN}` : undefined,
         }
     },
     hooks: {
