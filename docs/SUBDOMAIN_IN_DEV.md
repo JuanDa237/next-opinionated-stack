@@ -84,3 +84,16 @@ If configured correctly:
 - You remain logged in
 - Session is shared
 - Cookies are scoped to all local.test subdomains
+
+# Step 5 (Optional) - Use https
+
+- Install [Chocolatey](https://chocolatey.org/).
+- Run `choco install mkcert`
+- Run `mkcert -install`
+- Run this inside the project root `mkcert local.test "*.local.test"`.
+  It will generate something like:
+  ```
+  local.test+1.pem
+  local.test+1-key.pem
+  ```
+- Run `pnpm dev:https`

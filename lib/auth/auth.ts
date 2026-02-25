@@ -35,7 +35,7 @@ const trustedOrigins = (request?: Request) => {
             const origin = request.headers.get('origin') || '';
 
             // Allow any subdomain of the main domain
-            const domainPattern = new RegExp(`^https?://([a-zA-Z0-9-]+\\.)*${mainDomain.replace(/^\./, '').replace(/\./g, '\\.')}$`);
+            const domainPattern = new RegExp(`^https?://([a-zA-Z0-9-]+\\.)*${mainDomain.replace(/^\\./, '').replace(/\\./g, '\\.')}(:\\d+)?$`);
             const isDevelopment = process.env.NODE_ENV === 'development';
 
             if (domainPattern.test(origin) || (isDevelopment && origin.startsWith('http://'))) {
@@ -60,7 +60,7 @@ export const auth = betterAuth({
             domain: mainDomain,
         },
         defaultCookieAttributes: process.env.NODE_ENV === 'development' ? {
-            secure: false,
+            secure: process.env.ENABLE_HTTPS === 'true',
             sameSite: "lax",
         } : undefined
     },
