@@ -14,8 +14,23 @@ const eslintConfig = defineConfig([
     'build/**',
     'next-env.d.ts',
   ]),
+  // Project-specific rule overrides
+  {
+    files: ['**/*.{js,jsx,ts,tsx}'],
+    rules: {
+      'react/no-children-prop': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
+    },
+  },
   // Formatting, must be last
-  eslintConfigPrettier
+  eslintConfigPrettier,
 ]);
 
 export default eslintConfig;

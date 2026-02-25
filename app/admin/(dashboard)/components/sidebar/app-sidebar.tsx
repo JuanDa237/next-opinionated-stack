@@ -1,7 +1,10 @@
-import * as React from 'react';
+'use client';
 
-import { SearchForm } from './search-form';
-import { VersionSwitcher } from './version-switcher';
+import * as React from 'react';
+import { usePathname } from 'next/navigation';
+import { authClient } from '@/lib/auth/auth-client';
+
+import { TeamSwitcher } from './team-switcher';
 import {
   Sidebar,
   SidebarContent,
@@ -14,157 +17,185 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from '@/components/ui/sidebar';
+import Link from 'next/link';
 
-// This is sample data.
-const data = {
-  versions: ['1.0.1', '1.1.0-alpha', '2.0.0-beta1'],
-  navMain: [
-    {
-      title: 'Getting Started',
-      url: '#',
-      items: [
-        {
-          title: 'Installation',
-          url: '#',
+// Define menu items with their required permissions
+interface MenuItem {
+  title: string;
+  url: string;
+  role?: string;
+  permissions?: {
+    [resource: string]: string[];
+  };
+}
+
+interface NavSection {
+  title: string;
+  items: MenuItem[];
+}
+
+// This is sample data with permission requirements.
+const menuData: NavSection[] = [
+  {
+    title: 'Admin Settings',
+    items: [
+      {
+        title: 'Users',
+        url: '/admin/users',
+        permissions: {
+          user: ['list'],
         },
-        {
-          title: 'Project Structure',
-          url: '#',
+      },
+      {
+        title: 'Manage Organizations',
+        url: '/admin/organizations/manage',
+        role: 'admin',
+      },
+    ],
+  },
+  {
+    title: 'Settings',
+    items: [
+      {
+        title: 'Organization',
+        url: '/admin/organizations',
+        permissions: {
+          organizations: ['list'],
         },
-      ],
-    },
-    {
-      title: 'Building Your Application',
-      url: '#',
-      items: [
-        {
-          title: 'Routing',
-          url: '#',
+      },
+      {
+        title: 'Teams',
+        url: '/admin/teams',
+        permissions: {
+          team: ['create'],
         },
-        {
-          title: 'Data Fetching',
-          url: '#',
-          isActive: true,
+      },
+    ],
+  },
+  {
+    title: 'Principal Administration',
+    items: [
+      {
+        title: 'References',
+        url: '/admin/reference',
+        permissions: {
+          reference: ['read'],
         },
-        {
-          title: 'Rendering',
-          url: '#',
+      },
+      {
+        title: 'Warehouses',
+        url: '/admin/warehouse',
+        permissions: {
+          warehouse: ['read'],
         },
-        {
-          title: 'Caching',
-          url: '#',
+      },
+      {
+        title: 'Vendors',
+        url: '/admin/vendor',
+        permissions: {
+          vendor: ['read'],
         },
-        {
-          title: 'Styling',
-          url: '#',
-        },
-        {
-          title: 'Optimizing',
-          url: '#',
-        },
-        {
-          title: 'Configuring',
-          url: '#',
-        },
-        {
-          title: 'Testing',
-          url: '#',
-        },
-        {
-          title: 'Authentication',
-          url: '#',
-        },
-        {
-          title: 'Deploying',
-          url: '#',
-        },
-        {
-          title: 'Upgrading',
-          url: '#',
-        },
-        {
-          title: 'Examples',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'API Reference',
-      url: '#',
-      items: [
-        {
-          title: 'Components',
-          url: '#',
-        },
-        {
-          title: 'File Conventions',
-          url: '#',
-        },
-        {
-          title: 'Functions',
-          url: '#',
-        },
-        {
-          title: 'next.config.js Options',
-          url: '#',
-        },
-        {
-          title: 'CLI',
-          url: '#',
-        },
-        {
-          title: 'Edge Runtime',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Architecture',
-      url: '#',
-      items: [
-        {
-          title: 'Accessibility',
-          url: '#',
-        },
-        {
-          title: 'Fast Refresh',
-          url: '#',
-        },
-        {
-          title: 'Next.js Compiler',
-          url: '#',
-        },
-        {
-          title: 'Supported Browsers',
-          url: '#',
-        },
-        {
-          title: 'Turbopack',
-          url: '#',
-        },
-      ],
-    },
-  ],
-};
+      },
+    ],
+  },
+];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname();
+  const { data: session } = authClient.useSession();
+  const [visibleItems, setVisibleItems] = React.useState<NavSection[]>([]);
+
+  React.useEffect(() => {
+    const filterMenuItems = async () => {
+      if (!session?.user) {
+        setVisibleItems([]);
+        return;
+      }
+
+      console.log('Navbar rendering ...');
+      const filteredSections: NavSection[] = [];
+
+      for (const section of menuData) {
+        const visibleMenuItems: MenuItem[] = [];
+
+        for (const item of section.items) {
+          if (!item.permissions && !item.role) {
+            visibleMenuItems.push(item);
+            continue;
+          }
+
+          // If item has a role, check if user has that role
+          if (item.role && session.user?.role !== item.role) {
+            continue;
+          }
+
+          if (!item.permissions) {
+            visibleMenuItems.push(item);
+            continue;
+          }
+
+          // Check if user has the required permissions
+          try {
+            const hasPermission = await authClient.admin.hasPermission({
+              permissions: item.permissions,
+            });
+
+            // console.log(`Checking permissions for ${item.title}:`, hasPermission);
+            if (hasPermission.data?.success) {
+              visibleMenuItems.push(item);
+              continue;
+            }
+          } catch (error) {
+            console.warn(`Failed to check permissions for ${item.title}:`, error);
+          }
+
+          // Check if user has the required in the the current organization permissions
+          try {
+            const hasPermission = await authClient.organization.hasPermission({
+              permissions: item.permissions,
+            });
+
+            // console.log(`Checking org permissions for ${item.title}:`, hasPermission);
+            if (hasPermission.data?.success) {
+              visibleMenuItems.push(item);
+              continue;
+            }
+          } catch (error) {
+            console.warn(`Failed to check permissions for ${item.title}:`, error);
+          }
+        }
+
+        // Only add section if it has visible items
+        if (visibleMenuItems.length > 0) {
+          filteredSections.push({
+            ...section,
+            items: visibleMenuItems,
+          });
+        }
+      }
+
+      setVisibleItems(filteredSections);
+    };
+
+    filterMenuItems();
+  }, [session]);
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <VersionSwitcher versions={data.versions} defaultVersion={data.versions[0]} />
-        <SearchForm />
+        <TeamSwitcher />
       </SidebarHeader>
       <SidebarContent>
         {/* We create a SidebarGroup for each parent. */}
-        {data.navMain.map(item => (
-          <SidebarGroup key={item.title}>
-            <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
+        {visibleItems.map(section => (
+          <SidebarGroup key={section.title}>
+            <SidebarGroupLabel>{section.title}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {item.items.map(item => (
+                {section.items.map(item => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={item.isActive}>
-                      <a href={item.url}>{item.title}</a>
+                    <SidebarMenuButton asChild isActive={pathname === item.url}>
+                      <Link href={item.url}>{item.title}</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
