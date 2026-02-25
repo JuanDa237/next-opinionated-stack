@@ -15,12 +15,29 @@ import { adminAccessControl, adminRoles, organizationAccessControl, organization
 // Hooks
 import { createAuthMiddleware } from "better-auth/api";
 
-const trustedOrigins = [
-    process.env.VERCEL_BRANCH_URL ? `https://${process.env.VERCEL_BRANCH_URL}` : undefined,
-    process.env.VERCEL_PROJECT_PRODUCTION_URL
-        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-        : undefined,
-].filter(Boolean) as string[];
+
+// Allow all subdomains of the main domain (e.g., *.newexample.app)
+const mainDomain = process.env.BETTER_AUTH_DOMAIN || process.env.VERCEL_PROJECT_PRODUCTION_URL;
+const trustedOrigins = (request?: Request) => {
+    const origins: string[] = [];
+    if (process.env.VERCEL_BRANCH_URL) {
+        origins.push(`https://${process.env.VERCEL_BRANCH_URL}`);
+    }
+    if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+        origins.push(`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`);
+    }
+    if (mainDomain && request) {
+        try {
+            const origin = request.headers.get('origin') || '';
+            // Allow any subdomain of the main domain
+            const domainPattern = new RegExp(`^https?://([a-zA-Z0-9-]+\\.)*${mainDomain.replace(/^\./, '').replace(/\./g, '\\.')}$`);
+            if (domainPattern.test(origin)) {
+                origins.push(origin);
+            }
+        } catch { }
+    }
+    return origins;
+};
 
 export const auth = betterAuth({
     appName: "Next Opinionated Stack",
@@ -81,7 +98,6 @@ export const auth = betterAuth({
         cookieCache: {
             enabled: true,
             maxAge: 60,
-            domain: process.env.BETTER_AUTH_DOMAIN ?? undefined,
         }
     },
     hooks: {
