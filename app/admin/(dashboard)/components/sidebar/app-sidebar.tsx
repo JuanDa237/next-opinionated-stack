@@ -37,7 +37,7 @@ interface NavSection {
 // This is sample data with permission requirements.
 const menuData: NavSection[] = [
   {
-    title: 'Settings',
+    title: 'Admin Settings',
     items: [
       {
         title: 'Users',
@@ -47,16 +47,21 @@ const menuData: NavSection[] = [
         },
       },
       {
+        title: 'Manage Organizations',
+        url: '/admin/organizations/manage',
+        role: 'admin',
+      },
+    ],
+  },
+  {
+    title: 'Settings',
+    items: [
+      {
         title: 'Organization',
         url: '/admin/organizations',
         permissions: {
           organizations: ['list'],
         },
-      },
-      {
-        title: 'Manage Organizations',
-        url: '/admin/organizations/manage',
-        role: 'admin',
       },
       {
         title: 'Teams',
@@ -68,7 +73,7 @@ const menuData: NavSection[] = [
     ],
   },
   {
-    title: 'Administration',
+    title: 'Principal Administration',
     items: [
       {
         title: 'References',

@@ -1,11 +1,8 @@
+import { GradientBackground } from '@/components/common/gradient-background';
+
 export default function Page() {
   return (
-    <div className="h-full relative overflow-hidden border bg-[radial-gradient(1100px_circle_at_10%_-10%,rgba(14,116,144,0.18),transparent_45%),radial-gradient(900px_circle_at_90%_10%,rgba(59,130,246,0.22),transparent_40%),linear-gradient(135deg,rgba(2,6,23,0.02),rgba(2,6,23,0.08))] p-6 sm:p-10">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-24 right-6 h-48 w-48 rounded-full bg-sky-400/20 blur-3xl" />
-        <div className="absolute bottom-0 left-0 h-56 w-56 -translate-x-1/3 translate-y-1/3 rounded-full bg-blue-600/20 blur-3xl" />
-      </div>
-
+    <GradientBackground className="relative overflow-hidden border p-6 sm:p-10 h-full">
       <div className="relative grid gap-10 lg:grid-cols-[1.15fr_0.85fr]">
         <section className="space-y-7">
           <div className="inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-background/70 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-foreground/70">
@@ -57,7 +54,7 @@ export default function Page() {
         </section>
 
         <section className="grid gap-4">
-          <div className="animate-in rounded-3xl border border-foreground/10 bg-background/80 p-6 shadow-md fade-in slide-in-from-bottom-6 duration-700">
+          <div className="max-h-min animate-in rounded-3xl border border-foreground/10 bg-background/80 p-6 shadow-md fade-in slide-in-from-bottom-6 duration-700">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.22em] text-foreground/50">Hoy</p>
@@ -82,31 +79,8 @@ export default function Page() {
               </li>
             </ul>
           </div>
-
-          <div className="animate-in rounded-3xl border border-foreground/10 bg-[linear-gradient(140deg,rgba(15,118,110,0.12),rgba(2,6,23,0.02))] p-6 shadow-md fade-in slide-in-from-bottom-6 duration-700">
-            <h3 className="text-lg font-semibold text-foreground">Acceso rapido</h3>
-            <p className="mt-2 text-sm text-foreground/70">
-              Atajos inteligentes para que llegues a lo importante en un clic.
-            </p>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              {[
-                { label: 'Invitar miembros', href: '/admin/organizations' },
-                { label: 'Ver reportes', href: '/admin' },
-                { label: 'Seguridad', href: '/admin/profile' },
-                { label: 'Ajustes', href: '/admin/profile' },
-              ].map(item => (
-                <a
-                  key={item.label}
-                  className="rounded-2xl border border-foreground/10 bg-background/80 px-4 py-3 text-sm font-medium text-foreground/80 transition hover:-translate-y-0.5 hover:border-foreground/30"
-                  href={item.href}
-                >
-                  {item.label}
-                </a>
-              ))}
-            </div>
-          </div>
         </section>
       </div>
-    </div>
+    </GradientBackground>
   );
 }

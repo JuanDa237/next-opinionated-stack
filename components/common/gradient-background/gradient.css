@@ -1,0 +1,49 @@
+.hero-bg {
+  position: relative;
+  background-color: hsl(var(--background));
+  isolation: isolate;
+}
+
+/* Decorative gradient layer */
+.gradient-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+
+  background:
+    radial-gradient(
+      650px circle at 85% 15%,
+      rgba(228, 27, 30, 0.2) 0%,
+      rgba(255, 90, 40, 0.14) 40%,
+      rgba(255, 140, 0, 0.08) 65%,
+      transparent 75%
+    ),
+    radial-gradient(
+      750px circle at 10% 90%,
+      rgba(228, 27, 30, 0.12) 0%,
+      rgba(255, 110, 50, 0.08) 45%,
+      transparent 70%
+    );
+
+  filter: blur(90px);
+  transform: translateZ(0);
+}
+
+/* Adjust gradient for dark mode */
+.dark .gradient-layer {
+  background:
+    radial-gradient(
+      650px circle at 85% 15%,
+      rgba(228, 27, 30, 0.15) 0%,
+      rgba(255, 90, 40, 0.08) 40%,
+      rgba(255, 140, 0, 0.04) 65%,
+      transparent 75%
+    ),
+    radial-gradient(
+      750px circle at 10% 90%,
+      rgba(228, 27, 30, 0.08) 0%,
+      rgba(255, 110, 50, 0.04) 45%,
+      transparent 70%
+    );
+  opacity: 0.6;
+}

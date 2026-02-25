@@ -41,7 +41,11 @@ export function OrganizationSelect() {
       itemToStringValue={organization => organization.id}
       isItemEqualToValue={(item, selected) => item.id === selected.id}
     >
-      <ComboboxInput placeholder="Select an organization" showClear className="w-full" />
+      <ComboboxInput
+        placeholder="Select an organization"
+        showClear
+        className="w-full bg-background"
+      />
       <ComboboxContent className="w-full">
         <ComboboxEmpty>No organizations found.</ComboboxEmpty>
         <ComboboxList>
