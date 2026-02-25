@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { LogOut, User } from 'lucide-react';
+import { LogOut, User, Sun, Moon, Monitor, Check } from 'lucide-react';
+import { useTheme } from 'next-themes';
 
 import { authClient } from '@/lib/auth/auth-client';
 import { cn } from '@/lib/utils';
@@ -58,6 +59,7 @@ function getInitials(name?: string | null, email?: string | null) {
 export function UserMenu({ className }: UserMenuProps) {
   const router = useRouter();
   const { data, isPending } = authClient.useSession();
+  const { theme, setTheme } = useTheme();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [invitations, setInvitations] = useState<UserInvitation[]>([]);
   const [isInvitesLoading, setIsInvitesLoading] = useState(false);
@@ -217,6 +219,32 @@ export function UserMenu({ className }: UserMenuProps) {
           </DropdownMenuPortal>
         </DropdownMenuSub>
         <OrganizationsMenu disabled={isLoading} />
+        <DropdownMenuSeparator />
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
+            <Sun className="mr-2 h-4 w-4" />
+            Theme
+          </DropdownMenuSubTrigger>
+          <DropdownMenuPortal>
+            <DropdownMenuSubContent>
+              <DropdownMenuItem onClick={() => setTheme('light')}>
+                <Sun className="mr-2 h-4 w-4" />
+                Light
+                {theme === 'light' && <Check className="ml-auto h-4 w-4" />}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme('dark')}>
+                <Moon className="mr-2 h-4 w-4" />
+                Dark
+                {theme === 'dark' && <Check className="ml-auto h-4 w-4" />}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme('system')}>
+                <Monitor className="mr-2 h-4 w-4" />
+                System
+                {theme === 'system' && <Check className="ml-auto h-4 w-4" />}
+              </DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuPortal>
+        </DropdownMenuSub>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={handleSignOut} disabled={isLoading}>
           <LogOut className="mr-2 h-4 w-4" />

@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { ModeToggle } from './mode-toggle';
 import { UserMenu } from './user-menu';
 
 export function DashboardHeader() {
@@ -31,7 +30,6 @@ export function DashboardHeader() {
         </BreadcrumbList>
       </Breadcrumb>
       <div className="flex gap-2 ml-auto">
-        <ModeToggle />
         <UserMenu />
       </div>
     </header>
