@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
 
@@ -19,19 +19,29 @@ import {
 } from '@/components/ui/dialog';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const createInviteSchema = z.object({
   email: z.string().trim().email().min(1),
+  role: z.string().trim().min(1),
 });
 
 type CreateInviteForm = z.infer<typeof createInviteSchema>;
 
-interface Props {
-  teamId: string | null;
+interface InviteMemberButtonProps {
+  teamId?: string | null; // Optional team ID to add the invited member to a specific team
 }
 
-export function InviteTeamMemberButton({ teamId }: Props) {
+export function InviteMemberButton({ teamId }: InviteMemberButtonProps) {
   const [open, setOpen] = useState(false);
+  const { data: activeOrganization } = authClient.useActiveOrganization();
+  const [roleOptions, setRoleOptions] = useState<string[]>([]);
 
   const formId = 'invite-member-form';
   const form = useForm({
@@ -48,16 +58,11 @@ export function InviteTeamMemberButton({ teamId }: Props) {
   });
 
   async function handleCreateInvite(data: CreateInviteForm) {
-    if (!teamId) {
-      toast.error('No team selected');
-      return;
-    }
-
     await authClient.organization.inviteMember(
       {
         email: data.email,
-        role: 'member',
-        teamId: teamId,
+        role: data.role as 'member' | 'admin',
+        teamId: teamId ?? undefined,
       },
       {
         onError: error => {
@@ -70,6 +75,48 @@ export function InviteTeamMemberButton({ teamId }: Props) {
       }
     );
   }
+
+  useEffect(() => {
+    if (!activeOrganization?.id) {
+      return;
+    }
+
+    const loadRoles = async () => {
+      try {
+        const result = await authClient.organization.listRoles({
+          query: {
+            organizationId: activeOrganization.id,
+          },
+        });
+
+        const dynamicRoles =
+          result?.data
+            ?.map(role => role.role)
+            .filter((roleName): roleName is string => Boolean(roleName)) ?? [];
+
+        setRoleOptions(Array.from(new Set(['member', 'admin', ...dynamicRoles])));
+      } catch (error) {
+        const message =
+          error && typeof error === 'object' && 'error' in error
+            ? (error as { error?: { message?: string } }).error?.message
+            : undefined;
+        toast.error(message || 'Failed to load roles');
+        setRoleOptions(['member', 'admin']);
+      }
+    };
+
+    loadRoles();
+  }, [activeOrganization?.id]);
+
+  const roleSelectItems = useMemo(
+    () =>
+      (roleOptions.length > 0 ? roleOptions : ['member', 'admin']).map(role => (
+        <SelectItem key={role} value={role}>
+          {role.charAt(0).toUpperCase() + role.slice(1)}
+        </SelectItem>
+      )),
+    [roleOptions]
+  );
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -105,6 +152,31 @@ export function InviteTeamMemberButton({ teamId }: Props) {
                     onChange={event => field.handleChange(event.target.value)}
                     aria-invalid={isInvalid}
                   />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          </form.Field>
+          <form.Field name="role">
+            {field => {
+              const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>Role</FieldLabel>
+                  <Select
+                    value={field.state.value}
+                    onValueChange={value => field.handleChange(value as CreateInviteForm['role'])}
+                  >
+                    <SelectTrigger
+                      id={field.name}
+                      name={field.name}
+                      aria-invalid={isInvalid}
+                      className="w-full"
+                    >
+                      <SelectValue placeholder="Select a role" />
+                    </SelectTrigger>
+                    <SelectContent>{roleSelectItems}</SelectContent>
+                  </Select>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
               );

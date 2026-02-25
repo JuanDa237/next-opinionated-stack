@@ -3,30 +3,17 @@
 // import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { OrganizationInvitationsList } from '@/features/organizations/components/organization-invitations-list';
+import { OrganizationInvitationsList } from '@/features/organizations/components/invitations/organization-invitations-list';
 import { authClient } from '@/lib/auth/auth-client';
 import { TeamMembersList } from '../components/team-members-list';
-import { InviteTeamMemberButton } from '../components/invite-team-member-button';
 import { AddTeamMemberButton } from '../components/add-team-member-button';
+import { InviteMemberButton } from '@/features/organizations/components/invitations/invite-member-button';
 
 export function TeamsDashboard() {
-  // const [teamsRefreshKey, setTeamsRefreshKey] = useState(0);
-
   const { data: session } = authClient.useSession();
 
   return (
-    // <div className="grid gap-8 lg:grid-cols-[240px_1fr]">
     <div className="grid gap-8">
-      {/* <div className="space-y-6">
-        <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            Workspace
-          </p>
-          <OrganizationSelect />
-        </div>
-        <CreateTeamButton />
-      </div> */}
-
       <Tabs defaultValue="members" className="w-full">
         <TabsList>
           <TabsTrigger value="members">Members</TabsTrigger>
@@ -54,7 +41,7 @@ export function TeamsDashboard() {
                 <CardTitle>Invitations</CardTitle>
                 <CardDescription>Track pending invites for this team.</CardDescription>
               </div>
-              <InviteTeamMemberButton teamId={session?.session.activeTeamId ?? null} />
+              <InviteMemberButton teamId={session?.session.activeTeamId ?? null} />
             </CardHeader>
             <CardContent>
               <OrganizationInvitationsList teamId={session?.session.activeTeamId ?? null} />

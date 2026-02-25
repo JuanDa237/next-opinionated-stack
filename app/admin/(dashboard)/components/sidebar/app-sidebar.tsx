@@ -67,7 +67,7 @@ const menuData: NavSection[] = [
         title: 'Teams',
         url: '/admin/teams',
         permissions: {
-          team: ['list'],
+          team: ['create'],
         },
       },
     ],
@@ -143,6 +143,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             // console.log(`Checking permissions for ${item.title}:`, hasPermission);
             if (hasPermission.data?.success) {
               visibleMenuItems.push(item);
+              continue;
+            }
+          } catch (error) {
+            console.warn(`Failed to check permissions for ${item.title}:`, error);
+          }
+
+          // Check if user has the required in the the current organization permissions
+          try {
+            const hasPermission = await authClient.organization.hasPermission({
+              permissions: item.permissions,
+            });
+
+            // console.log(`Checking org permissions for ${item.title}:`, hasPermission);
+            if (hasPermission.data?.success) {
+              visibleMenuItems.push(item);
+              continue;
             }
           } catch (error) {
             console.warn(`Failed to check permissions for ${item.title}:`, error);

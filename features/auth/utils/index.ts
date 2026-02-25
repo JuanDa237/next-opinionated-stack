@@ -22,3 +22,18 @@ export const getSafeCallbackURL = (
         return fallback;
     }
 };
+
+export function normalizeRoles(role: string | string[], fallback = ['member']) {
+    if (Array.isArray(role)) {
+        return role;
+    }
+
+    if (typeof role === 'string') {
+        return role
+            .split(',')
+            .map(r => r.trim())
+            .filter(Boolean);
+    }
+
+    return fallback;
+}

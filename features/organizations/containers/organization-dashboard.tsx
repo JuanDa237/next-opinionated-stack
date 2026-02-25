@@ -1,16 +1,16 @@
 'use client';
 
 import { CreateOrganizationButton } from '../components/create-organization-button';
-import { InviteMemberButton } from '../components/invite-member-button';
-import { OrganizationInvitationsList } from '../components/organization-invitations-list';
-import { OrganizationMembersList } from '../components/organization-members-list';
+import { InviteMemberButton } from '../components/invitations/invite-member-button';
+import { OrganizationInvitationsList } from '../components/invitations/organization-invitations-list';
 import { OrganizationSelect } from '../components/organization-select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { OrganizationTeamsList } from '../components/organization-teams-list';
+import { OrganizationTeamsList } from '../components/teams/organization-teams-list';
 import { CreateTeamButton } from '../../teams/components/create-team-button';
-import { OrganizationRolesList } from '../components/organization-roles-list';
+import { OrganizationRolesList } from '../components/roles/organization-roles-list';
 import { authClient } from '@/lib/auth/auth-client';
+import { OrganizationMembersList } from '../components/members/organization-members-list';
 
 export function OrganizationDashboard() {
   const { data: session } = authClient.useSession();

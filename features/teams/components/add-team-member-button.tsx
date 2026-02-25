@@ -12,6 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { authClient } from '@/lib/auth/auth-client';
 import { toast } from 'sonner';
 import { useTeamMembersStore } from '../stores/team-members';
@@ -25,13 +26,14 @@ export function AddTeamMemberButton({ teamId }: AddTeamMemberButtonProps) {
 
   const [open, setOpen] = useState(false);
   const [pendingMemberId, setPendingMemberId] = useState<string | null>(null);
+  const [searchValue, setSearchValue] = useState('');
 
   const addTeamMember = useTeamMembersStore(state => state.addTeamMember);
   const clearError = useTeamMembersStore(state => state.clearError);
   const membersByTeamId = useTeamMembersStore(state => state.membersByTeamId);
   const fetchTeamMembers = useTeamMembersStore(state => state.fetchTeamMembers);
 
-  const members = activeOrganization?.members ?? [];
+  const members = useMemo(() => activeOrganization?.members ?? [], [activeOrganization]);
   const canOpen = Boolean(teamId);
 
   const teamMembers = useMemo(
@@ -43,6 +45,17 @@ export function AddTeamMemberButton({ teamId }: AddTeamMemberButtonProps) {
     () => new Set(teamMembers.map(member => member.userId).filter(Boolean)),
     [teamMembers]
   );
+
+  const filteredMembers = useMemo(() => {
+    if (!searchValue.trim()) return members;
+
+    const query = searchValue.toLowerCase();
+    return members.filter(member => {
+      const name = (member.user?.name ?? '').toLowerCase();
+      const email = (member.user?.email ?? '').toLowerCase();
+      return name.includes(query) || email.includes(query);
+    });
+  }, [members, searchValue]);
 
   useEffect(() => {
     if (teamId && open) {
@@ -73,7 +86,13 @@ export function AddTeamMemberButton({ teamId }: AddTeamMemberButtonProps) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={newOpen => {
+        setOpen(newOpen);
+        if (!newOpen) setSearchValue('');
+      }}
+    >
       <DialogTrigger asChild>
         <Button type="button" disabled={!canOpen}>
           Add Member
@@ -96,7 +115,16 @@ export function AddTeamMemberButton({ teamId }: AddTeamMemberButtonProps) {
         )}
         {activeOrganization && members.length > 0 && (
           <div className="space-y-3">
-            {members.map(member => {
+            <Input
+              placeholder="Search by name or email..."
+              value={searchValue}
+              onChange={e => setSearchValue(e.target.value)}
+              className="mb-4"
+            />
+            {filteredMembers.length === 0 && (
+              <div className="text-sm text-muted-foreground">No matching members found.</div>
+            )}
+            {filteredMembers.map(member => {
               const memberId = member.userId ?? member.id ?? member.user?.email;
 
               const memberLabel =

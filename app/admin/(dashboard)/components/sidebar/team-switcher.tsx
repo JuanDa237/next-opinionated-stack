@@ -19,10 +19,10 @@ import { useTeamsStore } from '@/features/teams/stores/teams';
 export function TeamSwitcher() {
   const { data: session } = authClient.useSession();
 
-  const teams = useTeamsStore(state => state.organizationTeams);
-  const isLoading = useTeamsStore(state => state.isLoadingOrganizationTeams);
+  const teams = useTeamsStore(state => state.userTeams);
+  const isLoading = useTeamsStore(state => state.isLoadingUserTeams);
   const error = useTeamsStore(state => state.error);
-  const fetchOrganizationTeams = useTeamsStore(state => state.fetchOrganizationTeams);
+  const fetchUserTeams = useTeamsStore(state => state.fetchUserTeams);
 
   const selectedTeamId = session?.session.activeTeamId ?? null;
   const activeOrganizationId = session?.session.activeOrganizationId ?? null;
@@ -30,14 +30,17 @@ export function TeamSwitcher() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!activeOrganizationId) {
-      return;
-    }
+    fetchUserTeams();
+  }, [fetchUserTeams]);
 
-    fetchOrganizationTeams(activeOrganizationId);
-  }, [activeOrganizationId, fetchOrganizationTeams]);
+  // Refetch teams when impersonation state changes
+  useEffect(() => {
+    fetchUserTeams();
+  }, [session?.session.impersonatedBy, fetchUserTeams]);
 
-  const selectedTeam = teams.find(team => team.id === selectedTeamId) ?? null;
+  // Filter teams to only show those in the active organization
+  const filteredTeams = teams.filter(team => team.organizationId === activeOrganizationId);
+  const selectedTeam = filteredTeams.find(team => team.id === selectedTeamId) ?? null;
   const selectedLabel = selectedTeam?.name || selectedTeam?.id || 'Select team';
 
   async function handleSelectTeam(teamId: string) {
@@ -78,13 +81,13 @@ export function TeamSwitcher() {
             {!isLoading && !error && !activeOrganizationId && (
               <DropdownMenuItem disabled>Select an organization</DropdownMenuItem>
             )}
-            {!isLoading && !error && activeOrganizationId && teams.length === 0 && (
+            {!isLoading && !error && activeOrganizationId && filteredTeams.length === 0 && (
               <DropdownMenuItem disabled>No teams available</DropdownMenuItem>
             )}
             {!isLoading &&
               !error &&
-              teams.length > 0 &&
-              teams.map(team => (
+              filteredTeams.length > 0 &&
+              filteredTeams.map(team => (
                 <DropdownMenuItem key={team.id} onSelect={() => handleSelectTeam(team.id)}>
                   {team.name ?? team.id}
                   {team.id === selectedTeamId && <Check className="ml-auto" />}

@@ -8,6 +8,7 @@ import { authClient } from '@/lib/auth/auth-client';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { OrganizationsMenu } from './organizations-menu';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -215,6 +216,7 @@ export function UserMenu({ className }: UserMenuProps) {
             </DropdownMenuSubContent>
           </DropdownMenuPortal>
         </DropdownMenuSub>
+        <OrganizationsMenu disabled={isLoading} />
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={handleSignOut} disabled={isLoading}>
           <LogOut className="mr-2 h-4 w-4" />

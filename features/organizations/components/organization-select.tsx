@@ -25,6 +25,9 @@ export function OrganizationSelect() {
         onError: error => {
           toast.error(error.error.message || 'Failed to switch organization');
         },
+        onSuccess: async () => {
+          await authClient.organization.setActiveTeam({ teamId: null });
+        },
       }
     );
   }

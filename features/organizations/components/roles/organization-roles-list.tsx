@@ -3,7 +3,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { OrganizationRolesDialog } from './organization-roles-dialog';
-import { useOrganizationRoles } from '../hooks/use-organization-roles';
+import { useOrganizationRoles } from '../../hooks/use-organization-roles';
 
 export function OrganizationRolesList() {
   const {
