@@ -38,7 +38,7 @@ type SigninFormProps = React.ComponentProps<'form'> & {
 export function SigninForm({ className, callbackURL, ...props }: SigninFormProps) {
   const [formError, setFormError] = useState<string | null>(null);
 
-  const safeCallbackURL = callbackURL ? getSafeCallbackURL(callbackURL) : '';
+  const safeCallbackURL = callbackURL ? getSafeCallbackURL(callbackURL, undefined) : '';
   const redirectUrl = safeCallbackURL
     ? `/admin/select-organization?callbackURL=${encodeURIComponent(safeCallbackURL)}`
     : '/admin/select-organization';

@@ -18,24 +18,32 @@ import { createAuthMiddleware } from "better-auth/api";
 
 // Allow all subdomains of the main domain (e.g., *.newexample.app)
 const mainDomain = process.env.BETTER_AUTH_DOMAIN || process.env.VERCEL_PROJECT_PRODUCTION_URL;
+
 const trustedOrigins = (request?: Request) => {
     const origins: string[] = [];
+
     if (process.env.VERCEL_BRANCH_URL) {
         origins.push(`https://${process.env.VERCEL_BRANCH_URL}`);
     }
+
     if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
         origins.push(`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`);
     }
+
     if (mainDomain && request) {
         try {
             const origin = request.headers.get('origin') || '';
+
             // Allow any subdomain of the main domain
             const domainPattern = new RegExp(`^https?://([a-zA-Z0-9-]+\\.)*${mainDomain.replace(/^\./, '').replace(/\./g, '\\.')}$`);
-            if (domainPattern.test(origin)) {
+            const isDevelopment = process.env.NODE_ENV === 'development';
+
+            if (domainPattern.test(origin) || (isDevelopment && origin.startsWith('http://'))) {
                 origins.push(origin);
             }
         } catch { }
     }
+
     return origins;
 };
 
@@ -43,14 +51,18 @@ export const auth = betterAuth({
     appName: "Next Opinionated Stack",
     baseURL:
         process.env.BETTER_AUTH_URL ||
-        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'),
+        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://local.test:3000'),
     trustedOrigins,
     secret: process.env.BETTER_AUTH_SECRET,
     advanced: {
         crossSubDomainCookies: {
             enabled: true,
-            domain: mainDomain, // Set the cookie domain to allow sharing cookies across subdomains
-        }
+            domain: mainDomain,
+        },
+        defaultCookieAttributes: process.env.NODE_ENV === 'development' ? {
+            secure: false,
+            sameSite: "lax",
+        } : undefined
     },
     database: drizzleAdapter(db, {
         provider: "pg",
