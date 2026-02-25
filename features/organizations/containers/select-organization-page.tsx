@@ -148,6 +148,13 @@ function ErrorState({ message }: { message: string }) {
 
 export function SelectOrganizationPage() {
   const router = useRouter();
+  // Extract orgSlug from subdomain (client-side only)
+  let orgSlug = '';
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname;
+    const parts = host.split('.');
+    if (parts.length > 2) orgSlug = parts[0];
+  }
 
   const searchParams =
     typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
@@ -176,10 +183,24 @@ export function SelectOrganizationPage() {
   const autoSelectRef = useRef(false);
 
   const handleSelectOrganization = useCallback(
-    async (organizationId: string) => {
+    async (organizationId: string, slug?: string) => {
       setIsLoading(true);
       try {
         await authClient.organization.setActive({ organizationId });
+        // If orgSlug is present, redirect to subdomain
+        const orgSubdomain = slug || orgSlug;
+        if (orgSubdomain) {
+          // Build the new URL with the org subdomain
+          const currentHost = typeof window !== 'undefined' ? window.location.host : '';
+          const domainParts = currentHost.split('.');
+          // Remove existing subdomain if present
+          if (domainParts.length > 2) domainParts.shift();
+          const baseDomain = domainParts.join('.');
+          const protocol = typeof window !== 'undefined' ? window.location.protocol : 'https:';
+          const url = `${protocol}//${orgSubdomain}.${baseDomain}${callbackURL}`;
+          window.location.href = url;
+          return;
+        }
         router.push(callbackURL);
       } catch (error) {
         const message =
@@ -190,7 +211,7 @@ export function SelectOrganizationPage() {
         setIsLoading(false);
       }
     },
-    [router, callbackURL]
+    [router, callbackURL, orgSlug]
   );
 
   // Load invitations on mount
@@ -294,7 +315,11 @@ export function SelectOrganizationPage() {
       <OrganizationList
         organizations={organizations}
         isLoading={isLoading}
-        onSelect={handleSelectOrganization}
+        onSelect={id => {
+          // Find the org slug from organizations list
+          const org = organizations.find(o => o.id === id);
+          handleSelectOrganization(id, org?.slug);
+        }}
       />
       {isInvitesLoading ? (
         <div className="text-center text-muted-foreground">Loading invitations...</div>
