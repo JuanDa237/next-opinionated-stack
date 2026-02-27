@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { UsersTable } from '@/features/users/components/users-table';
 import { Users } from 'lucide-react';
+import { parsePositiveInt } from '@/lib/helpers';
 
 type PageProps = {
   searchParams?: {
@@ -17,22 +18,14 @@ type PageProps = {
   };
 };
 
-const parsePositiveInt = (value: string | undefined, fallback: number) => {
-  const parsed = Number(value);
-  if (!Number.isFinite(parsed) || parsed <= 0) {
-    return fallback;
-  }
-
-  return Math.floor(parsed);
-};
-
 export default async function Page({ searchParams }: PageProps) {
+  //#region Auth and Permissions
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
   if (!session) {
-    redirect('/admin/signin');
+    return null;
   }
 
   // Check if user has 'list' permission for 'user' resource, refer to lib\auth\admin-access.ts
@@ -45,7 +38,9 @@ export default async function Page({ searchParams }: PageProps) {
   if (!permission?.success) {
     redirect('/admin');
   }
+  //#endregion
 
+  //#region Fetch Users with Pagination and Search
   const resolvedSearchParams = await searchParams;
 
   const limit = Math.min(100, parsePositiveInt(resolvedSearchParams?.limit, 10));
@@ -69,6 +64,7 @@ export default async function Page({ searchParams }: PageProps) {
         : {}),
     },
   });
+  //#endregion
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-6 px-4 py-6">

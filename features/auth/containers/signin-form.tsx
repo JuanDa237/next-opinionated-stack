@@ -24,7 +24,7 @@ import { SocialAuthButtons } from '../components/social-auth-buttons';
 import { PasswordInput } from '@/components/common/password-input';
 import { AuthPageDescription } from '../components/auth-page-description';
 import { PasskeySigninButton } from '../components/signin/passkey-signin-button';
-import { getSafeCallbackURL } from '../utils';
+import { AUTH_ROUTES } from '@/features/admin/helpers';
 
 const formSchema = z.object({
   email: z.email('Enter a valid email.').min(1, 'Email is required.'),
@@ -32,16 +32,15 @@ const formSchema = z.object({
 });
 
 type SigninFormProps = React.ComponentProps<'form'> & {
-  callbackURL?: string;
+  callbackurl: string | null;
 };
 
-export function SigninForm({ className, callbackURL, ...props }: SigninFormProps) {
-  const [formError, setFormError] = useState<string | null>(null);
+export function SigninForm({ className, ...props }: SigninFormProps) {
+  // TODO: Use callbackURL from search params to redirect after signin
+  const callbackURL =
+    props.callbackurl != null ? props.callbackurl : AUTH_ROUTES.SELECT_ORGANIZATION;
 
-  const safeCallbackURL = callbackURL ? getSafeCallbackURL(callbackURL) : '';
-  const redirectUrl = safeCallbackURL
-    ? `/admin/select-organization?callbackURL=${encodeURIComponent(safeCallbackURL)}`
-    : '/admin/select-organization';
+  const [formError, setFormError] = useState<string | null>(null);
 
   const formId = 'signin-form';
 
@@ -58,7 +57,7 @@ export function SigninForm({ className, callbackURL, ...props }: SigninFormProps
         {
           email: value.email,
           password: value.password,
-          callbackURL: redirectUrl || undefined,
+          callbackURL,
         },
         {
           onError: error => {
@@ -115,7 +114,7 @@ export function SigninForm({ className, callbackURL, ...props }: SigninFormProps
                 <div className="flex items-center">
                   <FieldLabel htmlFor={field.name}>Password</FieldLabel>
                   <Link
-                    href="/admin/forgot-password"
+                    href={AUTH_ROUTES.FORGOT_PASSWORD}
                     className="ml-auto text-sm underline-offset-4 hover:underline"
                   >
                     Forgot your password?
@@ -142,11 +141,11 @@ export function SigninForm({ className, callbackURL, ...props }: SigninFormProps
         </Field>
         <FieldSeparator>Or continue with</FieldSeparator>
         <Field>
-          <SocialAuthButtons callbackURL={safeCallbackURL} />
-          <PasskeySigninButton callbackURL={safeCallbackURL} />
+          <SocialAuthButtons callbackURL={callbackURL} />
+          <PasskeySigninButton callbackURL={callbackURL} />
           <FieldDescription className="text-center">
             Don&apos;t have an account?{' '}
-            <Link href="/admin/signup" className="underline underline-offset-4">
+            <Link href={AUTH_ROUTES.SIGNUP} className="underline underline-offset-4">
               Sign up
             </Link>
           </FieldDescription>

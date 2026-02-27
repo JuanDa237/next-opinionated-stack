@@ -1,32 +1,21 @@
 'use client';
 
-import { CreateOrganizationButton } from '../components/create-organization-button';
-import { InviteMemberButton } from '../components/invitations/invite-member-button';
-import { OrganizationInvitationsList } from '../components/invitations/organization-invitations-list';
-import { OrganizationSelect } from '../components/organization-select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
+// Tabs
+import { OrganizationInvitationsList } from '../components/invitations/organization-invitations-list';
 import { OrganizationTeamsList } from '../components/teams/organization-teams-list';
-import { CreateTeamButton } from '../../teams/components/create-team-button';
 import { OrganizationRolesList } from '../components/roles/organization-roles-list';
-import { authClient } from '@/lib/auth/auth-client';
 import { OrganizationMembersList } from '../components/members/organization-members-list';
 
+// Buttons
+import { InviteMemberButton } from '../components/invitations/invite-member-button';
+import { CreateTeamButton } from '../../teams/components/create-team-button';
+
 export function OrganizationDashboard() {
-  const { data: session } = authClient.useSession();
-
   return (
-    <div className="grid gap-8 lg:grid-cols-[240px_1fr]">
-      <div className="space-y-6">
-        <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            Workspace
-          </p>
-          <OrganizationSelect />
-        </div>
-        {session?.user.role === 'admin' && <CreateOrganizationButton />}
-      </div>
-
+    <div className="grid gap-8">
       <Tabs defaultValue="members" className="w-full">
         <TabsList>
           <TabsTrigger value="members">Members</TabsTrigger>

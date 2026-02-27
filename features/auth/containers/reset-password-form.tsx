@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { PasswordInput } from '@/components/common/password-input';
 import { AuthPageDescription } from '../components/auth-page-description';
+import { AUTH_ROUTES } from '@/features/admin/helpers';
 
 const formSchema = z
   .object({
@@ -75,7 +76,7 @@ export function ResetPasswordForm({ className, ...props }: React.ComponentProps<
     }
 
     if (redirectSeconds <= 0) {
-      router.push('/admin/signin');
+      router.push(AUTH_ROUTES.SIGNIN);
       return;
     }
 
@@ -93,7 +94,7 @@ export function ResetPasswordForm({ className, ...props }: React.ComponentProps<
         description="The reset link is invalid or has expired. Please try resetting your password again."
       >
         <Button className="w-full" asChild>
-          <Link href="/admin/forgot-password">Try Again</Link>
+          <Link href={AUTH_ROUTES.FORGOT_PASSWORD}>Try Again</Link>
         </Button>
       </AuthPageDescription>
     );

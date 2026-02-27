@@ -24,6 +24,7 @@ import { Input } from '@/components/ui/input';
 import { SocialAuthButtons } from '../components/social-auth-buttons';
 import { PasswordInput } from '@/components/common/password-input';
 import { AuthPageDescription } from '../components/auth-page-description';
+import { AUTH_ROUTES } from '@/features/admin/helpers';
 
 const formSchema = z
   .object({
@@ -59,7 +60,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
           email: value.email,
           password: value.password,
           name: value.name,
-          callbackURL: '/admin/email-verification',
+          callbackURL: AUTH_ROUTES.EMAIL_VERIFICATION,
         },
         {
           onError: error => {
@@ -68,7 +69,9 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
             );
           },
           onSuccess: () => {
-            router.push(`/admin/email-verification?email=${encodeURIComponent(value.email)}`);
+            router.push(
+              `${AUTH_ROUTES.EMAIL_VERIFICATION}?email=${encodeURIComponent(value.email)}`
+            );
           },
         }
       );
@@ -189,7 +192,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
         <Field>
           <SocialAuthButtons />
           <FieldDescription className="px-6 text-center">
-            Already have an account? <Link href="/admin/signin">Sign in</Link>
+            Already have an account? <Link href={AUTH_ROUTES.SIGNIN}>Sign in</Link>
           </FieldDescription>
         </Field>
       </AuthPageDescription>

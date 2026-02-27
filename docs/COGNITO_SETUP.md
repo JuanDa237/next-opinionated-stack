@@ -9,7 +9,7 @@ This guide covers a minimal AWS Cognito setup for a SPA using Better Auth.
 3. Define your application as **SPA**.
 4. Select **Email** as the sign-in identifier.
 5. Add the return URL for development:
-   - `http://localhost:3000/api/auth/callback/cognito`
+   - `https://local.dev:3000/api/auth/callback/cognito`
 
 ## Configure the app client
 

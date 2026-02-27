@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { CountdownSubmitButton } from '@/components/common/countdown-submit-button';
 import { authClient } from '@/lib/auth/auth-client';
+import { AUTH_ROUTES } from '@/features/admin/helpers';
 
 export function EmailVerificationResend({ email }: { email: string | null }) {
   const [cooldownKey, setCooldownKey] = useState(0);
@@ -30,7 +31,7 @@ export function EmailVerificationResend({ email }: { email: string | null }) {
         try {
           await authClient.sendVerificationEmail({
             email,
-            callbackURL: '/admin/email-verification',
+            callbackURL: AUTH_ROUTES.EMAIL_VERIFICATION,
           });
           setCooldownKey(current => current + 1);
         } finally {

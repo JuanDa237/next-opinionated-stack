@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { authClient } from '@/lib/auth/auth-client';
 import { CountdownSubmitButton } from '@/components/common/countdown-submit-button';
 import { AuthPageDescription } from '../components/auth-page-description';
+import { AUTH_ROUTES } from '@/features/admin/helpers';
 
 const formSchema = z.object({
   email: z.email('Enter a valid email.').min(1, 'Email is required.'),
@@ -45,7 +46,7 @@ export function ForgotPasswordForm({ className, ...props }: React.ComponentProps
       await authClient.requestPasswordReset(
         {
           email: value.email,
-          redirectTo: '/admin/reset-password',
+          redirectTo: AUTH_ROUTES.RESET_PASSWORD,
         },
         {
           onError: error => {

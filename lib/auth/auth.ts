@@ -3,6 +3,8 @@ import { betterAuth } from "better-auth";
 // DB
 import { db } from "@/lib/db/drizzle";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { eq } from "drizzle-orm";
+import { member } from "@/auth-schema";
 
 // Plugins
 import { nextCookies } from "better-auth/next-js";
@@ -15,27 +17,34 @@ import { adminAccessControl, adminRoles, organizationAccessControl, organization
 // Hooks
 import { createAuthMiddleware } from "better-auth/api";
 
-
 // Allow all subdomains of the main domain (e.g., *.newexample.app)
 const mainDomain = process.env.BETTER_AUTH_DOMAIN || process.env.VERCEL_PROJECT_PRODUCTION_URL;
+
 const trustedOrigins = (request?: Request) => {
     const origins: string[] = [];
+
     if (process.env.VERCEL_BRANCH_URL) {
         origins.push(`https://${process.env.VERCEL_BRANCH_URL}`);
     }
+
     if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
         origins.push(`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`);
     }
+
     if (mainDomain && request) {
         try {
             const origin = request.headers.get('origin') || '';
+
             // Allow any subdomain of the main domain
-            const domainPattern = new RegExp(`^https?://([a-zA-Z0-9-]+\\.)*${mainDomain.replace(/^\./, '').replace(/\./g, '\\.')}$`);
-            if (domainPattern.test(origin)) {
+            const domainPattern = new RegExp(`^https?://([a-zA-Z0-9-]+\\.)*${mainDomain.replace(/^\\./, '').replace(/\\./g, '\\.')}(:\\d+)?$`);
+            const isDevelopment = process.env.NODE_ENV === 'development';
+
+            if (domainPattern.test(origin) || (isDevelopment && origin.startsWith('http://'))) {
                 origins.push(origin);
             }
         } catch { }
     }
+
     return origins;
 };
 
@@ -43,14 +52,18 @@ export const auth = betterAuth({
     appName: "Next Opinionated Stack",
     baseURL:
         process.env.BETTER_AUTH_URL ||
-        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'),
+        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://local.dev:3000'),
     trustedOrigins,
     secret: process.env.BETTER_AUTH_SECRET,
     advanced: {
         crossSubDomainCookies: {
             enabled: true,
-            domain: mainDomain, // Set the cookie domain to allow sharing cookies across subdomains
-        }
+            domain: mainDomain,
+        },
+        defaultCookieAttributes: process.env.NODE_ENV === 'development' ? {
+            secure: process.env.ENABLE_HTTPS === 'true',
+            sameSite: "lax",
+        } : undefined
     },
     database: drizzleAdapter(db, {
         provider: "pg",
@@ -134,22 +147,26 @@ export const auth = betterAuth({
         },
         session: {
             create: {
-                // TODO: You can set activeOrganizationId in session based on anything you want.
-                // before: async userSession => {
-                //     // Set activeOrganizationId in session based on the most recent organization membership of the user
-                //     const membership = await db.query.member.findFirst({
-                //         where: eq(member.userId, userSession.userId),
-                //         orderBy: desc(member.createdAt),
-                //         columns: { organizationId: true }
-                //     });
+                before: async userSession => {
+                    // Find all organizations the user is a member of
+                    const memberships = await db.query.member.findMany({
+                        where: eq(member.userId, userSession.userId),
+                        columns: { organizationId: true },
+                    });
 
-                //     return {
-                //         data: {
-                //             ...userSession,
-                //             activeOrganizationId: membership?.organizationId,
-                //         }
-                //     }
-                // },
+                    let activeOrganizationId: string | undefined = undefined;
+
+                    if (memberships.length === 1) {
+                        activeOrganizationId = memberships[0].organizationId;
+                    }
+
+                    return {
+                        data: {
+                            ...userSession,
+                            activeOrganizationId,
+                        }
+                    }
+                },
             }
         }
     },
@@ -181,7 +198,8 @@ export const auth = betterAuth({
             },
             sendInvitationEmail: async ({ email, organization, inviter, invitation }) => {
                 // TODO: Integrate with your email provider to send the invitation email
-                console.log(`${inviter.user.name} sended organization (${organization.name}) invitation email to ${email} with url: ${process.env.BETTER_AUTH_URL}/admin/organizations/invites/${invitation.id}.`);
+                const invitationUrl = `${process.env.BETTER_AUTH_URL}/invites/${invitation.id}`;
+                console.log(`${inviter.user.name} sended organization (${organization.name}) invitation email to ${email} with url: ${invitationUrl}.`);
             },
             teams: {
                 enabled: true,

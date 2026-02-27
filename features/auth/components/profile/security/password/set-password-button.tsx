@@ -7,6 +7,7 @@ import { CountdownSubmitButton } from '@/components/common/countdown-submit-butt
 
 // Libs
 import { authClient } from '@/lib/auth/auth-client';
+import { AUTH_ROUTES } from '@/features/admin/helpers';
 
 export function SetPasswordButton() {
   const { data } = authClient.useSession();
@@ -19,7 +20,7 @@ export function SetPasswordButton() {
     <CountdownSubmitButton
       variant="outline"
       type="button"
-      disabled={!email}
+      disabled={!email || isSubmitting}
       isSubmitting={isSubmitting}
       cooldownKey={cooldownKey}
       baseResendSeconds={30}
@@ -34,7 +35,7 @@ export function SetPasswordButton() {
         try {
           await authClient.requestPasswordReset({
             email,
-            redirectTo: '/admin/reset-password',
+            redirectTo: AUTH_ROUTES.RESET_PASSWORD,
           });
           setCooldownKey(current => current + 1);
         } finally {

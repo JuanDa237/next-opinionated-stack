@@ -19,6 +19,24 @@ export default function Page() {
   const selectedTeam = userTeams.find(team => team.id === selectedTeamId) ?? null;
   const teamName = selectedTeam?.name || selectedTeam?.id || 'team';
 
+  if (selectedTeam === null) {
+    return (
+      <GradientBackground>
+        <div className="mx-auto w-full max-w-6xl px-6 py-10">
+          <div className="flex flex-col gap-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              Teams
+            </p>
+            <h1 className="text-4xl font-semibold tracking-tight">Select a team</h1>
+            <p className="max-w-2xl text-sm text-muted-foreground">
+              Select a team to manage members and invitations.
+            </p>
+          </div>
+        </div>
+      </GradientBackground>
+    );
+  }
+
   return (
     <GradientBackground>
       <div className="mx-auto w-full max-w-6xl px-6 py-10">

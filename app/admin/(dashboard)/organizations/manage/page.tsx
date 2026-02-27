@@ -1,5 +1,4 @@
 import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
 
 import { auth } from '@/lib/auth';
 
@@ -10,6 +9,7 @@ import { OrganizationsTable } from '@/features/organizations/components/organiza
 import { Building2 } from 'lucide-react';
 import { CreateOrganizationButton } from '@/features/organizations/components/create-organization-button';
 import { Organization } from 'better-auth/plugins';
+import { parsePositiveInt } from '@/lib/helpers';
 
 type PageProps = {
   searchParams?: {
@@ -19,24 +19,7 @@ type PageProps = {
   };
 };
 
-const parsePositiveInt = (value: string | undefined, fallback: number) => {
-  const parsed = Number(value);
-  if (!Number.isFinite(parsed) || parsed <= 0) {
-    return fallback;
-  }
-
-  return Math.floor(parsed);
-};
-
 export default async function Page({ searchParams }: PageProps) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) {
-    redirect('/admin/signin');
-  }
-
   const resolvedSearchParams = await searchParams;
 
   const limit = Math.min(100, parsePositiveInt(resolvedSearchParams?.limit, 10));
