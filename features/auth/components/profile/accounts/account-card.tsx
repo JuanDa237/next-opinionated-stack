@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { getClientMainDomainUrl } from '@/features/admin/helpers';
+import { AUTH_ROUTES, getClientMainDomainUrl } from '@/features/admin/helpers';
 import { authClient } from '@/lib/auth/auth-client';
 import {
   SUPPORTED_OAUTH_PROVIDER_DETAILS,
@@ -37,7 +37,7 @@ export function AccountCard({
   async function linkAccount() {
     await authClient.linkSocial({
       provider: providerId as SupportedOAuthProvider,
-      callbackURL: getClientMainDomainUrl('/admin/profile'),
+      callbackURL: getClientMainDomainUrl(AUTH_ROUTES.PROFILE),
     });
   }
 

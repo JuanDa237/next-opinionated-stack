@@ -7,6 +7,8 @@ export const AUTH_ROUTES = {
     FORGOT_PASSWORD: '/forgot-password',
     EMAIL_VERIFICATION: '/email-verification',
     RESET_PASSWORD: '/reset-password',
+    TWO_FACTOR: '/2fa',
+    PROFILE: '/admin/profile',
 };
 
 export const HEADER_KEYS = {

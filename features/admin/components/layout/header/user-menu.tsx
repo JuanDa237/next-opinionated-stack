@@ -22,6 +22,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { AUTH_ROUTES } from '@/features/admin/helpers';
 
 type UserMenuProps = {
   className?: string;
@@ -166,7 +167,7 @@ export function UserMenu({ className }: UserMenuProps) {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onSelect={() => router.push('/admin/profile')} disabled={!user}>
+        <DropdownMenuItem onSelect={() => router.push(AUTH_ROUTES.PROFILE)} disabled={!user}>
           <User className="mr-2 h-4 w-4" />
           <span>Profile</span>
         </DropdownMenuItem>
