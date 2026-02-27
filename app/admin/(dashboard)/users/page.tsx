@@ -31,10 +31,6 @@ export default async function Page({ searchParams }: PageProps) {
     headers: await headers(),
   });
 
-  if (!session) {
-    redirect('/admin/signin');
-  }
-
   // Check if user has 'list' permission for 'user' resource, refer to lib\auth\admin-access.ts
   // Only tics role can list users
   const permission = await auth.api.userHasPermission({

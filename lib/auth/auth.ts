@@ -3,6 +3,8 @@ import { betterAuth } from "better-auth";
 // DB
 import { db } from "@/lib/db/drizzle";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { eq } from "drizzle-orm";
+import { member } from "@/auth-schema";
 
 // Plugins
 import { nextCookies } from "better-auth/next-js";
@@ -14,7 +16,6 @@ import { adminAccessControl, adminRoles, organizationAccessControl, organization
 
 // Hooks
 import { createAuthMiddleware } from "better-auth/api";
-
 
 // Allow all subdomains of the main domain (e.g., *.newexample.app)
 const mainDomain = process.env.BETTER_AUTH_DOMAIN || process.env.VERCEL_PROJECT_PRODUCTION_URL;
@@ -146,22 +147,26 @@ export const auth = betterAuth({
         },
         session: {
             create: {
-                // TODO: You can set activeOrganizationId in session based on anything you want.
-                // before: async userSession => {
-                //     // Set activeOrganizationId in session based on the most recent organization membership of the user
-                //     const membership = await db.query.member.findFirst({
-                //         where: eq(member.userId, userSession.userId),
-                //         orderBy: desc(member.createdAt),
-                //         columns: { organizationId: true }
-                //     });
+                before: async userSession => {
+                    // Find all organizations the user is a member of
+                    const memberships = await db.query.member.findMany({
+                        where: eq(member.userId, userSession.userId),
+                        columns: { organizationId: true },
+                    });
 
-                //     return {
-                //         data: {
-                //             ...userSession,
-                //             activeOrganizationId: membership?.organizationId,
-                //         }
-                //     }
-                // },
+                    let activeOrganizationId: string | undefined = undefined;
+
+                    if (memberships.length === 1) {
+                        activeOrganizationId = memberships[0].organizationId;
+                    }
+
+                    return {
+                        data: {
+                            ...userSession,
+                            activeOrganizationId,
+                        }
+                    }
+                },
             }
         }
     },

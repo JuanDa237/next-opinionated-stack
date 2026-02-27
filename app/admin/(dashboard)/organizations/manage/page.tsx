@@ -1,5 +1,4 @@
 import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
 
 import { auth } from '@/lib/auth';
 
@@ -29,14 +28,6 @@ const parsePositiveInt = (value: string | undefined, fallback: number) => {
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) {
-    redirect('/admin/signin');
-  }
-
   const resolvedSearchParams = await searchParams;
 
   const limit = Math.min(100, parsePositiveInt(resolvedSearchParams?.limit, 10));

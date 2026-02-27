@@ -6,9 +6,6 @@ import { InviteInformation } from '@/features/organizations/components/invite-in
 import { GradientBackground } from '@/components/common/gradient-background';
 
 export default async function InvitationPage({ params }: { params: Promise<{ id: string }> }) {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (session == null) return redirect('/auth/login');
-
   const { id } = await params;
 
   const invitation = await auth.api

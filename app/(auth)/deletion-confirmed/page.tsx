@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { AUTH_ROUTES } from '@/features/admin/helpers';
 import Link from 'next/link';
 
 export default function Page() {
@@ -10,7 +11,7 @@ export default function Page() {
         time.
       </p>
       <Button className="mt-4" asChild>
-        <Link href="/admin/signup">Create new account</Link>
+        <Link href={AUTH_ROUTES.SIGNUP}>Create new account</Link>
       </Button>
     </div>
   );

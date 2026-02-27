@@ -3,13 +3,15 @@ import Image from 'next/image';
 
 // Components
 import { Logo } from '@/components/common/logo';
+import { LayoutLogoutButton } from '@/features/auth/components/layout-logout-button';
 
-export default function AuthLayout({ children }: PropsWithChildren) {
+export default async function AuthLayout({ children }: PropsWithChildren) {
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex justify-center gap-2 md:justify-start">
           <Logo />
+          <LayoutLogoutButton />
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">{children}</div>

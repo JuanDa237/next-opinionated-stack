@@ -3,7 +3,6 @@
 import { useEffect } from 'react';
 import { Building2, Check } from 'lucide-react';
 import { authClient } from '@/lib/auth/auth-client';
-import { toast } from 'sonner';
 import {
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -13,6 +12,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu';
+import { setActiveOrganization } from '@/features/auth/helpers';
 
 type OrganizationsMenuProps = {
   disabled?: boolean;
@@ -31,21 +31,6 @@ export function OrganizationsMenu({ disabled }: OrganizationsMenuProps) {
       refetchOrganizations();
     }
   }, [sessionData?.user?.id, sessionData?.session?.impersonatedBy, refetchOrganizations]);
-
-  const handleSelectOrganization = (organizationId: string) => {
-    authClient.organization.setActive(
-      { organizationId },
-      {
-        onError: error => {
-          toast.error(error.error.message || 'Failed to switch organization');
-        },
-        onSuccess: async () => {
-          await authClient.organization.setActiveTeam({ teamId: null });
-          toast.success('Switched organization');
-        },
-      }
-    );
-  };
 
   if (!organizations || organizations.length === 0) {
     return null;
@@ -67,7 +52,7 @@ export function OrganizationsMenu({ disabled }: OrganizationsMenuProps) {
               {organizations.map(organization => (
                 <DropdownMenuItem
                   key={organization.id}
-                  onSelect={() => handleSelectOrganization(organization.id)}
+                  onSelect={() => setActiveOrganization(organization.id, organization.slug)}
                   className="flex items-center justify-between"
                 >
                   <span>{organization.name}</span>
@@ -88,7 +73,7 @@ export function OrganizationsMenu({ disabled }: OrganizationsMenuProps) {
       {organizations.map(organization => (
         <DropdownMenuItem
           key={organization.id}
-          onSelect={() => handleSelectOrganization(organization.id)}
+          onSelect={() => setActiveOrganization(organization.id, organization.slug)}
           className="flex items-center justify-between"
           disabled={disabled}
         >

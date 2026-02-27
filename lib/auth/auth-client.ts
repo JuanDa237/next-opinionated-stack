@@ -11,6 +11,7 @@ export const authClient = createAuthClient({
     plugins: [
         twoFactorClient({
             onTwoFactorRedirect: () => {
+                // TODO: This should go to the main domain
                 window.location.href = '/admin/2fa';
             }
         }),

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { AUTH_ROUTES } from '@/features/admin/helpers';
 
 export function EmailVerifiedRedirect({
   email,
@@ -15,7 +16,7 @@ export function EmailVerifiedRedirect({
 
   useEffect(() => {
     if (secondsLeft <= 0) {
-      router.replace('/admin/select-organization');
+      router.replace(AUTH_ROUTES.SELECT_ORGANIZATION);
       return;
     }
 
@@ -29,7 +30,7 @@ export function EmailVerifiedRedirect({
   return (
     <div className="mx-auto flex max-w-md flex-col gap-2 text-center">
       <h1 className="text-2xl font-bold">Your email {email} was successfully verified.</h1>
-      <p className="text-muted-foreground text-sm">Redirecting to admin in {secondsLeft}...</p>
+      <p className="text-muted-foreground text-sm">Redirecting in {secondsLeft}...</p>
     </div>
   );
 }
