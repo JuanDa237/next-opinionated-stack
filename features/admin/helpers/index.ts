@@ -6,6 +6,7 @@ export const AUTH_ROUTES = {
     FORBIDDEN: '/forbidden',
     FORGOT_PASSWORD: '/forgot-password',
     EMAIL_VERIFICATION: '/email-verification',
+    RESET_PASSWORD: '/reset-password',
 };
 
 export const HEADER_KEYS = {
