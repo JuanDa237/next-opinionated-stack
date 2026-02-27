@@ -15,6 +15,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { AUTH_ROUTES } from '@/features/admin/helpers';
 
 // Libs
 import { authClient } from '@/lib/auth/auth-client';
@@ -24,7 +25,7 @@ export function DangerZone() {
   function handleDeleteAccount() {
     authClient.deleteUser(
       {
-        callbackURL: '/admin/deletion-confirmed',
+        callbackURL: AUTH_ROUTES.DELETION_CONFIRMED,
       },
       {
         onSuccess: () => {

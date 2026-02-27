@@ -22,7 +22,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { AUTH_ROUTES } from '@/features/admin/helpers';
+import { AUTH_ROUTES, getClientMainDomainUrl } from '@/features/admin/helpers';
 
 type UserMenuProps = {
   className?: string;
@@ -203,7 +203,9 @@ export function UserMenu({ className }: UserMenuProps) {
                         event.preventDefault();
 
                         if (invitationId) {
-                          router.push(`/admin/organizations/invites/${invitationId}`);
+                          window.location.href = getClientMainDomainUrl(
+                            `/${AUTH_ROUTES.INVITES}/${invitationId}`
+                          );
                         }
                       }}
                       disabled={!invitationId}

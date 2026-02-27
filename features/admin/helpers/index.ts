@@ -8,6 +8,9 @@ export const AUTH_ROUTES = {
     EMAIL_VERIFICATION: '/email-verification',
     RESET_PASSWORD: '/reset-password',
     TWO_FACTOR: '/2fa',
+    DELETION_CONFIRMED: '/deletion-confirmed',
+    INVITES: '/invites',
+    // Inside Admin Dashboard
     PROFILE: '/admin/profile',
 };
 

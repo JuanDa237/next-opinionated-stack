@@ -198,7 +198,8 @@ export const auth = betterAuth({
             },
             sendInvitationEmail: async ({ email, organization, inviter, invitation }) => {
                 // TODO: Integrate with your email provider to send the invitation email
-                console.log(`${inviter.user.name} sended organization (${organization.name}) invitation email to ${email} with url: ${process.env.BETTER_AUTH_URL}/admin/organizations/invites/${invitation.id}.`);
+                const invitationUrl = `${process.env.BETTER_AUTH_URL}/invites/${invitation.id}`;
+                console.log(`${inviter.user.name} sended organization (${organization.name}) invitation email to ${email} with url: ${invitationUrl}.`);
             },
             teams: {
                 enabled: true,

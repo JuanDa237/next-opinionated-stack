@@ -1,8 +1,11 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { AUTH_ROUTES } from '@/features/admin/helpers';
+import { setActiveOrganization } from '@/features/auth/helpers';
 import { authClient } from '@/lib/auth/auth-client';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export function InviteInformation({
   invitation,
@@ -16,10 +19,10 @@ export function InviteInformation({
       { invitationId: invitation.id },
       {
         onSuccess: async () => {
-          await authClient.organization.setActive({
-            organizationId: invitation.organizationId,
-          });
-          router.push('/admin/organizations');
+          setActiveOrganization(invitation.organizationId);
+        },
+        onError: () => {
+          toast.error('Failed to accept the invitation. Please try again later.');
         },
       }
     );
@@ -30,7 +33,12 @@ export function InviteInformation({
       {
         invitationId: invitation.id,
       },
-      { onSuccess: () => router.push('/admin') }
+      {
+        onSuccess: () => router.push(AUTH_ROUTES.SELECT_ORGANIZATION),
+        onError: () => {
+          toast.error('Failed to reject the invitation. Please try again later.');
+        },
+      }
     );
   }
 
