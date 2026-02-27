@@ -52,6 +52,9 @@ export default async function DashboardLayout({ children }: PropsWithChildren) {
       redirect(buildBaseDomainUrl(headers, AUTH_ROUTES.SELECT_ORGANIZATION));
       return;
     }
+  } else {
+    // TODO: Set callback url to current path so after org selection user is redirected to where they wanted to go
+    redirect(buildBaseDomainUrl(headers, AUTH_ROUTES.SELECT_ORGANIZATION));
   }
 
   //#endregion

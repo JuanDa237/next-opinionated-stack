@@ -52,7 +52,7 @@ export const auth = betterAuth({
     appName: "Next Opinionated Stack",
     baseURL:
         process.env.BETTER_AUTH_URL ||
-        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://local.test:3000'),
+        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://local.dev:3000'),
     trustedOrigins,
     secret: process.env.BETTER_AUTH_SECRET,
     advanced: {

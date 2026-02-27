@@ -7,15 +7,15 @@ import { HEADER_KEYS } from './features/admin/helpers';
  *
  * Example:
  *   For the URL:
- *     https://tenant1.local.test:3000/admin/signin?callbackUrl=/example#testanchor
+ *     https://tenant1.local.dev:3000/admin/signin?callbackUrl=/example#testanchor
  *
  *   The returned object will be:
  *   {
  *     protocol:   'https:',
- *     hostname:   'tenant1.local.test',
+ *     hostname:   'tenant1.local.dev',
  *     port:       '3000',
  *     subdomain:  'tenant1',
- *     mainDomain: 'local.test:3000',
+ *     mainDomain: 'local.dev:3000',
  *     pathname:   '/admin/signin',
  *     search:     '?callbackUrl=/example',
  *     hash:       '#testanchor',

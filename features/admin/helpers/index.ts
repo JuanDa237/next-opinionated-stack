@@ -24,15 +24,15 @@ export const HEADER_KEYS = {
  *
  * Example:
  *   For the URL:
- *     https://tenant1.local.test:3000/admin/signin?callbackUrl=/example#testanchor
+ *     https://tenant1.local.dev:3000/admin/signin?callbackUrl=/example#testanchor
  *
  *   The returned object will be:
  *   {
  *     protocol:   'https:',
- *     hostname:   'tenant1.local.test',
+ *     hostname:   'tenant1.local.dev',
  *     port:       '3000',
  *     subdomain:  'tenant1',
- *     mainDomain: 'local.test:3000',
+ *     mainDomain: 'local.dev:3000',
  *     pathname:   '/admin/signin',
  *     search:     '?callbackUrl=/example',
  *     hash:       '#testanchor',
@@ -67,7 +67,7 @@ export function getRequestUrlParts(headers: Headers) {
 /**
  * Returns the root domain (main domain + port, no subdomain) from proxy headers.
  * @param headers Headers object containing proxy-injected URL parts
- * @returns {string} The root domain (e.g. 'local.test:3000')
+ * @returns {string} The root domain (e.g. 'local.dev:3000')
  */
 export function getRootDomain(headers: Headers) {
     // Use the main domain and port from proxy headers for consistency
@@ -79,11 +79,11 @@ export function getRootDomain(headers: Headers) {
  *
  * Example:
  *   If the incoming request is:
- *     https://tenant1.local.test:3000/admin/signin
+ *     https://tenant1.local.dev:3000/admin/signin
  *   and you call:
  *     buildBaseDomainUrl(headers, '/admin/signin')
  *   The result will be:
- *     'https://local.test:3000/admin/signin'
+ *     'https://local.dev:3000/admin/signin'
  *
  * @param headers Headers object containing proxy-injected URL parts
  * @param path Path to append (should start with '/')
@@ -101,11 +101,11 @@ export function buildBaseDomainUrl(headers: Headers, path: string) {
  *
  * Example:
  *   If the incoming request is:
- *     https://tenant1.local.test:3000/admin/signin?callbackUrl=/example#testanchor
+ *     https://tenant1.local.dev:3000/admin/signin?callbackUrl=/example#testanchor
  *   and you call:
  *     getFullUrl(headers)
  *   The result will be:
- *     'https://tenant1.local.test:3000/admin/signin?callbackUrl=/example#testanchor'
+ *     'https://tenant1.local.dev:3000/admin/signin?callbackUrl=/example#testanchor'
  *
  * @param headers Headers object containing proxy-injected URL parts
  * @returns {string} Full URL with protocol, hostname, port, path, search, and hash
@@ -131,9 +131,9 @@ export function getFullUrl(headers: Headers, fallbackPathname?: string) {
  * Builds a subdomain-based route for a given organization slug and path.
  *
  * Example:
- *   If mainDomain is 'local.test:3000', slug is 'tenant1', and pathname is '/admin',
+ *   If mainDomain is 'local.dev:3000', slug is 'tenant1', and pathname is '/admin',
  *   the result will be:
- *     'tenant1.local.test:3000/admin'
+ *     'tenant1.local.dev:3000/admin'
  *
  * If no pathname is provided, defaults to the dashboard route.
  *
@@ -157,9 +157,9 @@ export function getOrganizationRoute(headers: Headers, slug: string, pathname?: 
  * Builds a subdomain-based route for a given mainDomain, organization slug and path.
  *
  * Example:
- *   If mainDomain is 'local.test:3000', slug is 'tenant1', and pathname is '/admin',
+ *   If mainDomain is 'local.dev:3000', slug is 'tenant1', and pathname is '/admin',
  *   the result will be:
- *     'tenant1.local.test:3000/admin'
+ *     'tenant1.local.dev:3000/admin'
  *
  * If no pathname is provided, defaults to the dashboard route.
  *
@@ -198,4 +198,46 @@ export function getOrganizationRouteClient(slug: string, pathname?: string) {
     }
 
     return `${protocol}//${slug}.${domainWithPort}${pathname}`;
+}
+
+
+/**
+ * Builds a full main domain URL (removing the first subdomain, if present) for a given pathname using the browser's window location.
+ *
+ * Example:
+ *   If the current location is:
+ *     https://tenant1.local.dev:3000/some/path
+ *   and you call:
+ *     getClientMainDomainUrl('/admin/signin')
+ *   The result will be:
+ *     'https://local.dev:3000/admin/signin'
+ *
+ * @param pathname Path to append to the main domain (should start with '/')
+ * @returns {string} Full URL with protocol and main domain (no subdomain)
+ * @throws {Error} If hostname is not available in window.location
+ */
+export function getClientMainDomainUrl(pathname: string) {
+    const protocol = window.location.protocol || 'https:';
+    const hostname = window.location.hostname;
+    const port = window.location.port;
+
+    if (!hostname) {
+        throw new Error('Hostname is required to build main domain URL');
+    }
+
+    // Extract main domain by removing the first subdomain segment
+    const hostParts = hostname.split('.');
+    let mainDomain = hostname;
+
+    if (hostParts.length > 2) {
+        mainDomain = hostParts.slice(1).join('.');
+    }
+
+    // Only add :port if present
+    let domainWithPort = mainDomain;
+    if (port) {
+        domainWithPort += `:${port}`;
+    }
+
+    return `${protocol}//${domainWithPort}${pathname}`;
 }

@@ -8,7 +8,7 @@
     "next.config.ts": "next.config.d.ts, next-env.d.ts",
     "components.json": "postcss.config.mjs",
     ".prettierrc": ".prettierignore",
-    "local.test+1.pem": "local.test+1-key.pem"
+    "local.dev+1.pem": "local.dev+1-key.pem"
   },
   // Formatting
   "editor.formatOnSave": true,
