@@ -8,7 +8,7 @@ export function NoOrganizationsState() {
         <h1 className="text-2xl font-bold">No Organizations</h1>
         <p className="text-muted-foreground text-sm">
           You don&apos;t have any organizations yet. Subscribe to create one or wait for an
-          invitation.
+          invitation in your email.
         </p>
       </div>
       <div className="grid gap-4">
