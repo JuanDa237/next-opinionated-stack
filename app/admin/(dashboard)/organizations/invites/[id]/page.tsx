@@ -1,6 +1,11 @@
-import { auth } from '@/lib/auth/auth';
-import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+
+// Auth
+import { auth } from '@/lib/auth/auth';
+import { AUTH_ROUTES } from '@/features/admin/helpers';
+
+// Components
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { InviteInformation } from '@/features/organizations/components/invite-information';
 import { GradientBackground } from '@/components/common/gradient-background';
@@ -8,12 +13,14 @@ import { GradientBackground } from '@/components/common/gradient-background';
 export default async function InvitationPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
-  const invitation = await auth.api
-    .getInvitation({
-      headers: await headers(),
-      query: { id },
-    })
-    .catch(() => redirect('/'));
+  const invitation = await auth.api.getInvitation({
+    headers: await headers(),
+    query: { id },
+  });
+
+  if (!invitation) {
+    redirect(AUTH_ROUTES.DASHBOARD);
+  }
 
   return (
     <GradientBackground className="h-full">

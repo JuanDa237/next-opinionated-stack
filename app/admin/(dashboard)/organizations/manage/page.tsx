@@ -9,6 +9,7 @@ import { OrganizationsTable } from '@/features/organizations/components/organiza
 import { Building2 } from 'lucide-react';
 import { CreateOrganizationButton } from '@/features/organizations/components/create-organization-button';
 import { Organization } from 'better-auth/plugins';
+import { parsePositiveInt } from '@/lib/helpers';
 
 type PageProps = {
   searchParams?: {
@@ -16,15 +17,6 @@ type PageProps = {
     limit?: string;
     q?: string;
   };
-};
-
-const parsePositiveInt = (value: string | undefined, fallback: number) => {
-  const parsed = Number(value);
-  if (!Number.isFinite(parsed) || parsed <= 0) {
-    return fallback;
-  }
-
-  return Math.floor(parsed);
 };
 
 export default async function Page({ searchParams }: PageProps) {

@@ -3,8 +3,8 @@ import { redirect } from 'next/navigation';
 import { headers as getHeaders } from 'next/headers';
 
 // Components
-import { AppSidebar } from './components/sidebar/app-sidebar';
-import { DashboardHeader } from './components/header/dashboard-header';
+import { AppSidebar } from '@/features/admin/components/layout/sidebar/app-sidebar';
+import { DashboardHeader } from '@/features/admin/components/layout/header/dashboard-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 
 // Auth
@@ -13,7 +13,7 @@ import { ImpersonationIndicator } from '@/features/auth/components/impersionatio
 import { AUTH_ROUTES, HEADER_KEYS, buildBaseDomainUrl } from '@/features/admin/helpers';
 
 export default async function DashboardLayout({ children }: PropsWithChildren) {
-  // --- Authentication and Organization Access Logic ---
+  //#region Authentication and Organization Access Logic
   const headers = await getHeaders();
 
   const session = await auth.api.getSession({ headers });
@@ -23,12 +23,6 @@ export default async function DashboardLayout({ children }: PropsWithChildren) {
   }
 
   const organizations = await auth.api.listOrganizations({ headers });
-
-  // if (!session.session.activeOrganizationId) {
-  //   // No active organization, redirect to org selection page
-  //   redirect(buildBaseDomainUrl(headers, AUTH_ROUTES.SELECT_ORGANIZATION));
-  //   return;
-  // }
 
   // --- Subdomain (org slug) validation and active org setting ---
   const orgSlug = headers.get(HEADER_KEYS.SUBDOMAIN);
@@ -60,7 +54,7 @@ export default async function DashboardLayout({ children }: PropsWithChildren) {
     }
   }
 
-  // --- END Authentication and Organization Access Logic ---
+  //#endregion
 
   return (
     <SidebarProvider>
