@@ -12,4 +12,6 @@ const nextConfig: NextConfig = {
   },
 };
 
+// Log the site domain for startup
+console.log('\n- Site Domain: ', `${process.env.ENABLE_HTTPS === 'true' ? 'https' : 'http'}://${process.env.BETTER_AUTH_DOMAIN}:${process.env.PORT}`);
 export default nextConfig;
